@@ -1,6 +1,6 @@
 import 'dart:ffi';
 
-import 'package:advanced_calculation/src/graphing/coordinate_calculator.dart';
+import 'file:///C:/Users/Greg/IdeaProjects/se-calc/advanced_calculation/lib/src/coordinate_calculator.dart';
 import 'package:advanced_calculation/src/library_loader.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,7 +32,7 @@ void main() {
     });
 
     test('loads function upfront',(){
-      verify(loader.load()).called(1);
+      verify(loader.loadGraphCalculateFunction()).called(1);
     });
   });
 
@@ -48,7 +48,7 @@ void main() {
 
     setUpAll((){
       MockLibraryLoader loader = MockLibraryLoader();
-      when(loader.load()).thenReturn(calculate);
+      when(loader.loadGraphCalculateFunction()).thenReturn(calculate);
       TestableCoordinateCalculator calculator = TestableCoordinateCalculator(loader);
       actualOutput = calculator.calculate('2x',6);
     });
