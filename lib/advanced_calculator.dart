@@ -1,8 +1,9 @@
-import 'package:advanced_calculation/src/calculator.dart';
+library advanced_calculation;
 
+import 'package:advanced_calculation/src/calculator.dart';
 import 'src/coordinate_calculator.dart';
 
-class AdvancedCalculation {
+class AdvancedCalculator {
   CoordinateCalculator coordinateCalculator = CoordinateCalculator();
   Calculator calculator = Calculator();
 
