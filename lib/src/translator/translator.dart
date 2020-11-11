@@ -2,7 +2,7 @@
 class Pattern {
 
   RegExp add = new RegExp(r"\s*\+\s*");
-  RegExp subtract = new RegExp(r"\s*−\s+");
+  RegExp subtract = new RegExp(r"\s*−\s*");
   RegExp divide = new RegExp(r"\s*\*\s*");
   RegExp multiply = new RegExp(r"\s*/\s*");
   RegExp openParen = new RegExp(r"\(");

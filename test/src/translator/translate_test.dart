@@ -14,7 +14,7 @@ void main() {
         expect(translator.translate('2 + 2'), '2 + 2');
       });
       test('minus - with spacing', () {
-        expect(translator.translate('2 - 2'), '2 - 2');
+        expect(translator.translate('2 − 2'), '2 - 2');
       });
       test('multiply - no spacing', () {
         expect(translator.translate('2*2'), '2 * 2');
@@ -56,7 +56,7 @@ void main() {
         expect(translator.translate('tan(3.0)'), 'tan ( 3.0 )');
       });
       test('preserve negatives', () {
-        expect(translator.translate('3 + -4*(-2 * -5)'), '3 + -4 *  ( -2 * -5 )');
+        expect(translator.translate('3 + -4*(-2 * -5)'), '3 + -1 * 4 *  (  -1 * 2 * -1 * 5 )');
       });
     });
     group('unclosed parentheses:', () {
@@ -64,7 +64,7 @@ void main() {
         expect(translator.translate('sin(sin(sin(sin(3'), 'sin ( sin ( sin ( sin ( 3 ) ) ) )');
       });
       test('expression 2', () {
-        expect(translator.translate('(3 + sin(4 - 2 * (cos(50) / 2'), '( 3 + sin ( 4 - 2 *  ( cos ( 50 )  / 2 ) ) )');
+        expect(translator.translate('(3 + sin(4 − 2 * (cos(50) / 2'), '( 3 + sin ( 4 - 2 *  ( cos ( 50 )  / 2 ) ) )');
       });
     });
     group('add implied * sign:', () {
@@ -72,7 +72,7 @@ void main() {
         expect(translator.translate('2 + 3sin(4 + 4)'), '2 + 3 * sin ( 4 + 4 )');
       });
       test('expression 2', () {
-        expect(translator.translate('4 + 3(9) - 2(4 + 3)'), '4 + 3 *  ( 9 )  - 2 *  ( 4 + 3 )');
+        expect(translator.translate('4 + 3(9) − 2(4 + 3)'), '4 + 3 *  ( 9 )  - 2 *  ( 4 + 3 )');
       });
     });
   });
