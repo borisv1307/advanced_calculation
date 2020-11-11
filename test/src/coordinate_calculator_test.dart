@@ -1,6 +1,6 @@
 import 'dart:ffi';
 
-import 'file:///C:/Users/Greg/IdeaProjects/se-calc/advanced_calculation/lib/src/coordinate_calculator.dart';
+import 'package:advanced_calculation/src/coordinate_calculator.dart';
 import 'package:advanced_calculation/src/library_loader.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter_test/flutter_test.dart';
