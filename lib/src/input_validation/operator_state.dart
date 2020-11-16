@@ -11,7 +11,7 @@ class OperatorState extends State {
   // and used for transitioning from one state to another
   @override
   int getNextState(String value, int counter) {
-    if(RegExp(r'^-?[0-9]+(.[0-9]+)?$').hasMatch(value)){
+    if(RegExp(r'^-?[0-9]+(.[0-9]+)?$|^[𝜋𝑒]$', unicode: true).hasMatch(value)){
       //update state
       context.setCurrentState(new NextOperandState(context));
     }

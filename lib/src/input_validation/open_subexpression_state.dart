@@ -15,7 +15,7 @@ class OpenSubExpressionState extends State {
       // remain in the same state
       counter = counter + 1;
     }
-    else if(RegExp(r'^-?[0-9]+(.[0-9]+)?$').hasMatch(value)){
+    else if(RegExp(r'^-?[0-9]+(.[0-9]+)?$|^[𝜋𝑒]$', unicode: true).hasMatch(value)){
       // update state
       context.setCurrentState(new FirstOperandState(context));
     }
