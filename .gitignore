@@ -6,3 +6,5 @@ build/
 android/local.properties
 ios/Flutter/Generated.xcconfig
 ios/Flutter/flutter_export_environment.sh
+pubspec.lock
+example/pubspec.lock
