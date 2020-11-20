@@ -90,4 +90,14 @@ class Translator {
     return input.replaceAll("-", " -1 * ");
   }
 
+  // translate matrix expression such as 'Matrix1+Matrix2'
+  String translateMatrix(String input) {
+    String translated;
+    translated = input. replaceAll(patterns.add, " + ");
+    translated = translated.replaceAll(patterns.subtract, " - ");
+    translated = translated.replaceAll(patterns.divide, " * ");
+    translated = translated.replaceAll(patterns.multiply, " / ");
+    return translated;
+  }
+
 }
