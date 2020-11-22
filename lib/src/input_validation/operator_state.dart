@@ -1,5 +1,5 @@
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
-import 'package:advanced_calculation/src/input_validation/next_operand_State.dart';
+import 'package:advanced_calculation/src/input_validation/next_operand_state.dart';
 import 'package:advanced_calculation/src/input_validation/open_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
 import 'package:advanced_calculation/src/input_validation/validate_function.dart';
