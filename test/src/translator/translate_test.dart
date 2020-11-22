@@ -45,6 +45,9 @@ void main() {
       test('ln', () {
         expect(translator.translate('ln(3.1)'), 'ln ( 3.1 )');
       });
+      test('commas', () {
+        expect(translator.translate("max(3,5)"), 'max ( 3 , 5 )');
+      });
       test('log', () {
         expect(translator.translate('log(11)'), 'log ( 11 )');
       });

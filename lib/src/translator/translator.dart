@@ -48,6 +48,7 @@ class Translator {
     result = result.replaceAll("^", " ^ ");
     result = result.replaceAll("(", " ( ");
     result = result.replaceAll(")", " ) ");
+    result = result.replaceAll(",", " , ");
     result = result.replaceAll("²", " ^ 2 ");
     result = result.replaceAll("⁻¹", " ^ -1 ");
     result = result.replaceAll("ln(", "ln ( " );

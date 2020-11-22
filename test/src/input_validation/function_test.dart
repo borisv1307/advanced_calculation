@@ -63,7 +63,7 @@ void main(){
 
       test('invalid complex comma function', () {
         var string = 'tan ( 2 + sin ( 2 ) , ( 3 * 4 ) * cos ( 2 ) )';
-        expect(tester.testFunction(string), equals(true));
+        expect(tester.testFunction(string), equals(false));
       });
 
       test('invalid number of comma', () {
