@@ -2,17 +2,20 @@
 import 'package:advanced_calculation/advanced_calculator.dart';
 import 'package:advanced_calculation/src/calculator.dart';
 import 'package:advanced_calculation/src/coordinate_calculator.dart';
+import 'package:advanced_calculation/src/matrix_calculator.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 class MockCoordinateCalculator extends Mock implements CoordinateCalculator{}
 class MockCalculator extends Mock implements Calculator{}
+class MockMatrixCalculator extends Mock implements MatrixCalculator{}
 
 class TestableAdvancedCalculator extends AdvancedCalculator{
   CoordinateCalculator coordinateCalculator;
   Calculator calculator;
+  MatrixCalculator matrixCalculator;
 
-  TestableAdvancedCalculator(this.calculator, this.coordinateCalculator);
+  TestableAdvancedCalculator(this.calculator, this.coordinateCalculator, this.matrixCalculator);
 
   @override
   CoordinateCalculator getCoordinateCalculator(){
@@ -22,18 +25,24 @@ class TestableAdvancedCalculator extends AdvancedCalculator{
   Calculator getCalculator(){
     return calculator;
   }
+  @override
+  MatrixCalculator getMatrixCalculator(){
+    return matrixCalculator;
+  }
 }
 
 void main() {
   MockCoordinateCalculator mockCoordinateCalculator;
   AdvancedCalculator advancedCalculator;
   Calculator mockCalculator;
+  MatrixCalculator mockMatrixCalculator;
 
   setUp((){
     mockCoordinateCalculator = MockCoordinateCalculator();
     mockCalculator = MockCalculator();
+    mockMatrixCalculator = MockMatrixCalculator();
 
-    advancedCalculator = TestableAdvancedCalculator(mockCalculator,mockCoordinateCalculator);
+    advancedCalculator = TestableAdvancedCalculator(mockCalculator,mockCoordinateCalculator,mockMatrixCalculator);
   });
 
   test('Coordinate calculator is utilized',(){
