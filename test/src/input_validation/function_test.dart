@@ -35,6 +35,41 @@ void main(){
         var string = '23xA4G5';
         expect(tester.testFunction(string), equals(false));
       });
+
+      test('invalid comma position 1', () {
+        var string = 'max ( 4 , , 2 )';
+        expect(tester.testFunction(string), equals(false));
+      });
+
+      test('invalid comma position 2', () {
+        var string = 'max ( 4 ) ,';
+        expect(tester.testFunction(string), equals(false));
+      });
+
+      test('invalid comma position 3', () {
+        var string = 'max ( 4 , )';
+        expect(tester.testFunction(string), equals(false));
+      });
+
+      test('invalid comma position 4', () {
+        var string = 'max ( , 4 )';
+        expect(tester.testFunction(string), equals(false));
+      });
+
+      test('invalid comma function', () {
+        var string = 'sin ( 4 , 2 )';
+        expect(tester.testFunction(string), equals(false));
+      });
+
+      test('invalid complex comma function', () {
+        var string = 'tan ( 2 + sin ( 2 ) , ( 3 * 4 ) * cos ( 2 ) )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('invalid number of comma', () {
+        var string = 'max ( 4 , 2 , 8 )';
+        expect(tester.testFunction(string), equals(false));
+      });
     });
     
     group('no operands next to one another', () {
@@ -117,6 +152,11 @@ void main(){
 
       test('no adjacent pairs', () {
         var string = '( 2 + 2 ) ( 2 + 2 )';
+        expect(tester.testFunction(string), equals(false));
+      });
+
+      test('invalid parenthesis', () {
+        var string = 'max ( 4 , 2 ) )';
         expect(tester.testFunction(string), equals(false));
       });
     });
@@ -419,6 +459,51 @@ void main(){
 
       test('stacked functions', () {
         var string = '-log ( floor ( sinh ( cos ( atan ( log ( -round ( sin ( -10.3456 ) ) ) ) ) ^ sqrt ( 100.2 ) ) / cos ( -5 ) ) )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('simple max function with 1 parameter', () {
+        var string = 'max ( 3 )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('simple max function', () {
+        var string = 'max ( 3 , 6 )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('simple min function', () {
+        var string = 'min ( -3 , 6 )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('simple gcd function', () {
+        var string = 'gcd ( 2 , 10 )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('simple lcm function', () {
+        var string = 'lcm ( 3 , 4 )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('complex max function', () {
+        var string = 'max ( 2 + sin ( 2 ) , ( 3 * 4 ) * cos ( 2 ) )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('expression with mix parameters 1', () {
+        var string = 'tan ( 2 ) + max ( 2 + sin ( 2 ) , ( 3 * 4 ) * cos ( 2 ) ) + cos ( 3 )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('expressions with mix parameter 2', () {
+        var string = 'max ( 2 + sin ( 2 ) , ( 3 * 4 ) * cos ( 2 ) ) + sin ( 2 ) + min ( 3 , 4 )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('expressions with multiple parameter', () {
+        var string = 'max ( 2 + sin ( 2 ) , ( 3 * 4 ) * cos ( 2 ) ) + min ( 3 , 4 )';
         expect(tester.testFunction(string), equals(true));
       });
     });

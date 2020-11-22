@@ -17,5 +17,5 @@ abstract class State {
   }
 
   //abstract method
-  int getNextState(String value, int counter);
+  int getNextState(String value, int counterValue, bool isMultiParam);
 }
