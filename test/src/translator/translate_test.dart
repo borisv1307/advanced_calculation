@@ -64,6 +64,9 @@ void main() {
       test('x²', () {
         expect(translator.translate('4.0²'), '4.0 ^ 2');
       });
+      test('sqrt', () {
+        expect(translator.translate('√(4.0)'), 'sqrt ( 4.0 )');
+      });
       test('x⁻¹', () {
         expect(translator.translate('3⁻¹'), '3 ^ -1');
       });
