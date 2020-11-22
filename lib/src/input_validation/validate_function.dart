@@ -59,7 +59,7 @@ class ValidateFunction {
         inputString[i] = inputString[i].substring(1); // remove the negative
       }
 
-      if(RegExp(r'^-?[0-9]+(.[0-9]+)?$').hasMatch(inputString[i]) || inputString[i].length == 1) {  // numbers or operands
+      if(RegExp(r'^-?[0-9]+(.[0-9]+)?$|^[𝜋𝑒]$', unicode: true).hasMatch(inputString[i]) || inputString[i].length == 1) {  // numbers or operands
         if(this.isMultiParam)
           this.multiParamCounter = currentState.getNextState(inputString[i], multiParamCounter, isMultiParam);
         else

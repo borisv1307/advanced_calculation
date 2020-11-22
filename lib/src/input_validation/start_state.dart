@@ -10,7 +10,7 @@ class StartState extends State {
 
   @override
   int getNextState(String value, int counterValue, bool isMultiParam){
-    if(RegExp(r'^-?[0-9]+(.[0-9]+)?$').hasMatch(value)){
+    if(RegExp(r'^-?[0-9]+(.[0-9]+)?$|^[𝜋𝑒]$', unicode: true).hasMatch(value)){
       context.setCurrentState(new FirstOperandState(context));
     }
     else if(value == "("){

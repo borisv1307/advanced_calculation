@@ -7,8 +7,15 @@ class Pattern {
   RegExp multiply = new RegExp(r"\s*/\s*");
   RegExp openParen = new RegExp(r"\(");
   RegExp closeParen = new RegExp(r"\)");
-  RegExp numberX = new RegExp(r'([0-9]+)([a-z]+)');
-  RegExp numberParen = new RegExp(r'([0-9]+)(\()');
+  RegExp numberX = new RegExp(r'([0-9]+|[𝜋𝑒])([a-z]+)', unicode: true);
+  RegExp numberParen = new RegExp(r'([0-9]+|[𝜋𝑒])(\()', unicode: true);
+  RegExp numberConst = new RegExp(r'([0-9]+|[𝜋𝑒])([𝜋𝑒])', unicode: true);
+
+  // RegExp numberX = new RegExp(r'([0-9]+|[\u{1D70B}\u{1D452}])([a-z]+)');
+  // RegExp numberParen = new RegExp(r'([0-9]+|[\u{1D70B}\u{1D452}])(\()');
+  // RegExp numberConst = new RegExp(r'([0-9]+|[\u{1D70B}\u{1D452}])([\u{1D70B}\u{1D452}])');
+
+
 
   static final Pattern _singleton = Pattern._internal();
   factory Pattern() {
@@ -42,6 +49,7 @@ class Translator {
     result = result.replaceAll("(", " ( ");
     result = result.replaceAll(")", " ) ");
     result = result.replaceAll("²", " ^ 2 ");
+    result = result.replaceAll("⁻¹", " ^ -1 ");
     result = result.replaceAll("ln(", "ln ( " );
     result = result.replaceAll("sin(", "sin ( ");
     result = result.replaceAll("cos(", "cos ( ");
@@ -63,13 +71,18 @@ class Translator {
 
   // change all tokens such as '3sin' into '3 * sin' and '3(' to '3 * ('
   String _addImpliedMultiply(String input) {
-    String result;
-    result = input.replaceAllMapped(patterns.numberX, (Match m) {
-      return "${m.group(1)} * ${m.group(2)}";
-    });
-    result = result.replaceAllMapped(patterns.numberParen, (Match m) {
-      return "${m.group(1)} * ${m.group(2)}";
-    });
+    String result = input;
+    for (var i = 0; i < 2; i++) {  // runs twice for overlapping matches
+      result = result.replaceAllMapped(patterns.numberX, (Match m) {
+        return "${m.group(1)} * ${m.group(2)}";
+      });
+      result = result.replaceAllMapped(patterns.numberParen, (Match m) {
+        return "${m.group(1)} * ${m.group(2)}";
+      });
+      result = result.replaceAllMapped(patterns.numberConst, (Match m) {
+        return "${m.group(1)} * ${m.group(2)}";
+      });
+    }
     return result;
   }
 

@@ -1,0 +1,10 @@
+.packages
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+android/local.properties
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+pubspec.lock
+example/pubspec.lock
