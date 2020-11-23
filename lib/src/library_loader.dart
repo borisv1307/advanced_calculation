@@ -8,6 +8,8 @@ typedef GraphCalculateFunction = double Function(Pointer<Utf8>, double x);
 typedef RawCalculateFunction = Double Function(Pointer<Utf8>);
 typedef CalculateFunction = double Function(Pointer<Utf8>);
 
+typedef MatrixFunction = Pointer<Utf8> Function(Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>);
+
 class LibraryLoader{
   static const FILE_NAME = "libcalc.so";
   final DynamicLibrary library;
@@ -31,5 +33,13 @@ class LibraryLoader{
         .asFunction<CalculateFunction>();
 
     return calculateFunction;
+  }
+
+  MatrixFunction loadMatrixFunction() {
+    MatrixFunction matrixFunction = library
+      .lookup<NativeFunction<MatrixFunction>>("calculate_matr")
+      .asFunction();
+    
+    return matrixFunction;
   }
 }

@@ -1,15 +1,18 @@
 library advanced_calculation;
 
 import 'package:advanced_calculation/src/calculator.dart';
-import 'src/coordinate_calculator.dart';
+import 'package:advanced_calculation/src/coordinate_calculator.dart';
+import 'package:advanced_calculation/src/matrix_calculator.dart';
 
 class AdvancedCalculator {
   CoordinateCalculator _coordinateCalculator;
   Calculator _calculator;
+  MatrixCalculator _matrixCalculator;
 
   AdvancedCalculator(){
     _coordinateCalculator = getCoordinateCalculator();
     _calculator = getCalculator();
+    _matrixCalculator = getMatrixCalculator();
   }
 
 
@@ -21,6 +24,14 @@ class AdvancedCalculator {
     return _calculator.calculate(input);
   }
 
+  String calculateMatrix(String input) {
+    return _matrixCalculator.calculate(input);
+  }
+
+  MatrixCalculator getMatrixCalculator(){
+    return MatrixCalculator();
+  }
+
   CoordinateCalculator getCoordinateCalculator(){
     return CoordinateCalculator();
   }
@@ -28,5 +39,7 @@ class AdvancedCalculator {
   Calculator getCalculator(){
     return Calculator();
   }
+
+
 
 }
