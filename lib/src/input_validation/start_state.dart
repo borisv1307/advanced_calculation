@@ -1,5 +1,6 @@
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/open_subexpression_state.dart';
+import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
 import 'package:advanced_calculation/src/input_validation/validate_function.dart';
 import 'first_operand_state.dart';
@@ -10,7 +11,7 @@ class StartState extends State {
 
   @override
   int getNextState(String value, int counterValue, bool isMultiParam){
-    if(RegExp(r'^-?[0-9]+(.[0-9]+)?$|^[𝜋𝑒]$', unicode: true).hasMatch(value)){
+    if(Pattern.validOperand.hasMatch(value)){
       context.setCurrentState(new FirstOperandState(context));
     }
     else if(value == "("){

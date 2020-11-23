@@ -1,6 +1,7 @@
 
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/operator_state.dart';
+import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/input_validation/start_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
 import 'package:advanced_calculation/src/input_validation/validate_function.dart';
@@ -21,7 +22,7 @@ class CloseSubExpressionState extends State {
         context.setCurrentState(new ErrorState(context));
       }
     }
-    else if(RegExp(r'^[+\-\/*^]$').hasMatch(value)){
+    else if(Pattern.validBasicOperator.hasMatch(value)){
       context.setCurrentState(new OperatorState(context));
     }
     else if(value == ","){

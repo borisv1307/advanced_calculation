@@ -65,11 +65,6 @@ void main(){
         var string = 'tan ( 2 + sin ( 2 ) , ( 3 * 4 ) * cos ( 2 ) )';
         expect(tester.testFunction(string), equals(false));
       });
-
-      test('invalid number of comma', () {
-        var string = 'max ( 4 , 2 , 8 )';
-        expect(tester.testFunction(string), equals(false));
-      });
     });
     
     group('no operands next to one another', () {
@@ -484,6 +479,26 @@ void main(){
 
       test('simple lcm function', () {
         var string = 'lcm ( 3 , 4 )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('multiple number of comma for max', () {
+        var string = 'max ( 4 , 2 , 8 )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('multiple number of comma for min', () {
+        var string = 'min ( 4 , 2 , 8 )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('multiple number of comma for gcd', () {
+        var string = 'gcd ( 4 , 2 , 8 )';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('multiple number of comma for lcm', () {
+        var string = 'lcm ( 4 , 2 , 8 )';
         expect(tester.testFunction(string), equals(true));
       });
 

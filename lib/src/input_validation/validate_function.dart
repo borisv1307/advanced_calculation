@@ -2,17 +2,18 @@ import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/start_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
 import 'open_subexpression_state.dart';
+import 'package:advanced_calculation/src/input_validation/pattern.dart';
 
 class ValidateFunction {
   State currentState;
   bool isMultiParam = false;
   int multiParamCounter = 0; // Considers counting '(' for math functions with more than parameter
   int counter = 0; // Considers counting '(' for math functions with 1 parameter
-  List<String> lengthTwoFunc = ["ln"];
-  List<String> lengthThreeFunc = ["log","sin","cos","tan", "abs", "csc","sec", "cot" ];
-  List<String> lengthFourFunc = ["sqrt", "sinh", "cosh", "tanh", "asin", "acos", "atan", "acsc", "asec", "acot", "csch", "sech", "coth", "ceil"];
-  List<String> lengthFiveFunc = ["asinh", "acosh", "atanh", "acsch", "asech", "acoth", "floor", "round", "trunc", "fract"];
-  List<String> lengthThreeMultiParamFunc = ["max", "min", "gcd", "lcm"];
+  static final List<String> lengthTwoFunc = ["ln"];
+  static final List<String> lengthThreeFunc = ["log","sin","cos","tan", "abs", "csc","sec", "cot" ];
+  static final List<String> lengthFourFunc = ["sqrt", "sinh", "cosh", "tanh", "asin", "acos", "atan", "acsc", "asec", "acot", "csch", "sech", "coth", "ceil"];
+  static final List<String> lengthFiveFunc = ["asinh", "acosh", "atanh", "acsch", "asech", "acoth", "floor", "round", "trunc", "fract"];
+  static final List<String> lengthThreeMultiParamFunc = ["max", "min", "gcd", "lcm"];
 
   ValidateFunction(){
     currentState= new StartState(this);
@@ -59,7 +60,7 @@ class ValidateFunction {
         inputString[i] = inputString[i].substring(1); // remove the negative
       }
 
-      if(RegExp(r'^-?[0-9]+(.[0-9]+)?$|^[𝜋𝑒]$', unicode: true).hasMatch(inputString[i]) || inputString[i].length == 1) {  // numbers or operands
+      if(Pattern.validOperand.hasMatch(inputString[i]) || inputString[i].length == 1) {  // numbers or operands
         if(this.isMultiParam)
           this.multiParamCounter = currentState.getNextState(inputString[i], multiParamCounter, isMultiParam);
         else

@@ -2,6 +2,7 @@
 import 'package:advanced_calculation/src/input_validation/close_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/operator_state.dart';
+import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/input_validation/start_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
 import 'package:advanced_calculation/src/input_validation/validate_function.dart';
@@ -13,7 +14,7 @@ class FirstOperandState extends State {
 
   @override
   int getNextState(String value, int counterValue, bool isMultiParam) {
-    if(RegExp(r'^[+\-\/*^]$').hasMatch(value)){
+    if(Pattern.validBasicOperator.hasMatch(value)){
       context.setCurrentState(new OperatorState(context));
     }
     else if(value == ","){
