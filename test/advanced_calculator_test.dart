@@ -62,10 +62,10 @@ void main() {
   });
 
   test('Matrix calculator is utilized',(){
-    when(mockMatrixCalculator.calculate('&1,2!3,4 + 2,-1!-1,2')).thenReturn('&3,1!2,6');
+    when(mockMatrixCalculator.calculate('&1,2!3,4 + &2,-1!-1,2')).thenReturn('&3,1!2,6');
 
-     String output = advancedCalculator.calculateMatrix('&1,2!3,4 + 2,-1!-1,2');
+     String output = advancedCalculator.calculateMatrix('&1,2!3,4 + &2,-1!-1,2');
      expect(output, '&3,1!2,6');
-     verify(mockMatrixCalculator.calculate('&1,2!3,4 + 2,-1!-1,2')).called(1);
+     verify(mockMatrixCalculator.calculate('&1,2!3,4 + &2,-1!-1,2')).called(1);
   });
 }
