@@ -1,20 +1,22 @@
 import 'package:advanced_calculation/src/input_validation/validate_function.dart';
 import 'package:advanced_calculation/src/library_loader.dart';
 import 'package:advanced_calculation/src/translator/translator.dart';
+import 'package:advanced_calculation/syntax_exception.dart';
 import 'package:ffi/ffi.dart';
 
+import 'input_validation/validate_function.dart';
+import 'library_loader.dart';
+import 'translator/translator.dart';
+
 class Calculator{
-  CalculateFunction calculateFunction;
-  ValidateFunction tester = new ValidateFunction();
-  Translator translator = new Translator();
+  final CalculateFunction calculateFunction;
+  final ValidateFunction tester;
+  final Translator translator;
 
-  Calculator() {
-    calculateFunction = getLibraryLoader().loadCalculateFunction();
-  }
-
-  LibraryLoader getLibraryLoader(){
-    return LibraryLoader();
-  }
+  Calculator({LibraryLoader loader ,ValidateFunction validator, Translator translator}):
+    calculateFunction = (loader ?? LibraryLoader()).loadCalculateFunction(),
+    tester = validator ?? ValidateFunction(),
+    translator = translator ?? Translator();
 
   String calculate(String input){
     String resultString;
@@ -27,7 +29,7 @@ class Calculator{
       double results = calculateFunction(Utf8.toUtf8(expression));  // call to backend evaluator
       resultString = results.toString();
     } else {
-      resultString = "Syntax Error";
+      throw new SyntaxException(0);
     }
     return resultString;
   }

@@ -68,4 +68,5 @@ void main() {
      expect(output, '&3,1!2,6');
      verify(mockMatrixCalculator.calculate('&1,2!3,4 + &2,-1!-1,2')).called(1);
   });
+
 }
