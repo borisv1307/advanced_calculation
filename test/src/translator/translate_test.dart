@@ -83,6 +83,14 @@ void main() {
         expect(translator.translate('3 + -4*(-2 * -5)'), '3 + -1 * 4 * ( -1 * 2 * -1 * 5 )');
       });
     });
+    group('correctly parses matrix expression', () {
+      test('2x2', () {
+        expect(translator.translateMatrixExpr('&1,2!3,4+&5,6!7,8'), '&1,2!3,4 + &5,6!7,8');
+      });
+      test('3x3', () {
+        expect(translator.translateMatrixExpr('&1,2,3!4,5,6!7,8,9−&1,2,3!4,5,6!7,8,9'), '&1,2,3!4,5,6!7,8,9 − &1,2,3!4,5,6!7,8,9');
+      });
+    });
     group('unclosed parentheses:', () {
       test('expression 1', () {
         expect(translator.translate('sin(sin(sin(sin(3'), 'sin ( sin ( sin ( sin ( 3 ) ) ) )');
