@@ -445,6 +445,16 @@ void main(){
         expect(tester.testFunction(string), equals(true));
       });
 
+      test('negative parentheses', () {
+        var string = '4+-(30*2)';
+        expect(tester.testFunction(string), equals(true));
+      });
+
+      test('basic negative parentheses', () {
+        var string = '-(3)';
+        expect(tester.testFunction(string), equals(true));
+      });
+
       test('negative trig input', () {
         var string = '-sin(3)';
         expect(tester.testFunction(string), equals(true));

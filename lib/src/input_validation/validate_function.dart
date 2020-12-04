@@ -11,7 +11,7 @@ class ValidateFunction {
 
   static final List<String> validFunctions = ["ln","log","sin","cos","tan", "abs", "csc","sec", "cot", "sqrt", "sinh", "cosh", "tanh",
     "asin", "acos", "atan", "acsc", "asec", "acot", "csch", "sech", "coth", "ceil","asinh", "acosh", "atanh", "acsch", "asech",
-    "acoth", "floor", "round", "trunc", "fract", "√"];
+    "acoth", "floor", "round", "trunc", "fract", "√", '-'];
   static final List<String> multiParamFunctions = ["max", "min", "gcd", "lcm"];
   static final List<String> operators = ['*','/','−','+','(',')','^',','];
 
@@ -20,7 +20,6 @@ class ValidateFunction {
     if(input.endsWith(',')){
       trimmed = input.substring(input.length - 1); // remove the negative
     }
-
     List<String> sanitizedInput = parser.padTokens(trimmed).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
 
     return sanitizedInput;
