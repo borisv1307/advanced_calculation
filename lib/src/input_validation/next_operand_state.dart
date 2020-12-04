@@ -2,7 +2,6 @@ import 'package:advanced_calculation/src/input_validation/close_subexpression_st
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/operator_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
-import 'package:advanced_calculation/src/input_validation/start_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
 
 import 'error_state.dart';
@@ -16,10 +15,6 @@ class NextOperandState extends State {
     State state = ErrorState(this.counter,this.multiParam);
     if(Pattern.validCommaBasicOperator.hasMatch(value)){
       state = new OperatorState(this.counter,this.multiParam);
-    }
-    // reaching here signifies a valid input expression
-    else if(value == "=" && this.counter <= 0){
-      state = new StartState(this.counter,this.multiParam);
     }
     else if(value.startsWith(")")){
       state = new CloseSubExpressionState(this.counter - 1,this.multiParam);
