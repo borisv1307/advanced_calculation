@@ -21,6 +21,7 @@ class Translator {
     result = result.replaceAll("²", " ^ 2 ");
     result = result.replaceAll("⁻¹", " ^ -1 ");
     result = result.replaceAll("√", "sqrt");
+    result = result.replaceAll("−", "-");
 
     return result;
   }
