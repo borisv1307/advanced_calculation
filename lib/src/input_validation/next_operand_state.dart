@@ -17,10 +17,6 @@ class NextOperandState extends State {
     if(Pattern.validCommaBasicOperator.hasMatch(value)){
       state = new OperatorState(this.counter,this.multiParam);
     }
-    // reaching here signifies a valid input expression
-    else if(value == "=" && this.counter <= 0){
-      state = new StartState(this.counter,this.multiParam);
-    }
     else if(value.startsWith(")")){
       state = new CloseSubExpressionState(this.counter - 1,this.multiParam);
     }

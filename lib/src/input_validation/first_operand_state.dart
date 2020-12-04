@@ -20,9 +20,6 @@ class FirstOperandState extends State {
     else if(value == "," && this.multiParam){
       state = new OperatorState(this.counter, this.multiParam);
     }
-    else if(value == "=" && this.counter <= 0){
-      state = new StartState(this.counter, this.multiParam);
-    }
     else if(value == ")"){
       state = new CloseSubExpressionState(this.counter - 1, this.multiParam);
     }
