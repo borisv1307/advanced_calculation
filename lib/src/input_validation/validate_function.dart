@@ -1,4 +1,5 @@
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
+import 'package:advanced_calculation/src/input_validation/parse_location.dart';
 import 'package:advanced_calculation/src/input_validation/start_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
 import 'open_subexpression_state.dart';
@@ -15,7 +16,7 @@ class ValidateFunction {
   static final List<String> multiParamFunctions = ["max", "min", "gcd", "lcm"];
 
   ValidateFunction(){
-    currentState= new StartState(this);
+    currentState= new StartState();
   }
 
   void setCurrentState(State currentState) {
@@ -45,29 +46,34 @@ class ValidateFunction {
 
   bool testFunction(String input) {
     List<String> inputString = _initialize(input);
-    currentState= new StartState(this);
+    currentState= new StartState();
 
-    for(int i = 0; i < inputString.length; i++) {
+    for(String token in inputString) {
       //handle special negatives for complex functions
-      if(RegExp(r'^-[a-z]+$').hasMatch(inputString[i]) && inputString[i].length > 1) {
-        inputString[i] = inputString[i].substring(1); // remove the negative
+      if(token.startsWith('-') && token.length > 1) {
+        token = token.substring(1); // remove the negative
       }
 
-      if(Pattern.validOperand.hasMatch(inputString[i]) || inputString[i].length == 1) {  // numbers or operands
-        if(this.isMultiParam)
-          this.multiParamCounter = currentState.getNextState(inputString[i], multiParamCounter, isMultiParam);
-        else
-          this.counter = currentState.getNextState(inputString[i], counter, isMultiParam);
+      if(Pattern.validOperand.hasMatch(token) || token.length == 1) {  // numbers or operands
+        ParseLocation location;
+        if(this.isMultiParam) {
+          location = currentState.getNextState(token, multiParamCounter, isMultiParam);
+          this.multiParamCounter = location.counter;
+        }else {
+          location = currentState.getNextState(token, counter, isMultiParam);
+          this.counter = location.counter;
+        }
+        currentState = location.currentState;
 
         if(currentState is ErrorState)
           return false;
-      } else if(inputString[i] == "-(") {
+      } else if(token == "-(") {
           // handle expression special case and Increment the counter and update state
           incrementCounter();
-          currentState = new OpenSubExpressionState(this);
-      } else if(multiParamFunctions.contains(inputString[i])){
+          currentState = new OpenSubExpressionState();
+      } else if(multiParamFunctions.contains(token)){
         isMultiParam = true;
-      } else if(!validFunctions.contains(inputString[i])) {
+      } else if(!validFunctions.contains(token)) {
         return false;
       }
     }

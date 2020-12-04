@@ -1,48 +1,47 @@
 
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/operator_state.dart';
+import 'package:advanced_calculation/src/input_validation/parse_location.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/input_validation/start_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
 import 'package:advanced_calculation/src/input_validation/validate_function.dart';
 
+import 'error_state.dart';
 import 'validate_function.dart';
 
 class CloseSubExpressionState extends State {
-  CloseSubExpressionState(ValidateFunction context) : super(context);
-
   @override
-  int getNextState(String value, int counterValue, bool isMultiParam){
+  ParseLocation getNextState(String value, int counterValue, bool isMultiParam){
+    State state = ErrorState();
     if(value == ")"){
       if(counterValue >= 1){
         counterValue = counterValue - 1;
+        state= CloseSubExpressionState();
         //remain in the same state
       }
       else {
-        context.setCurrentState(new ErrorState(context));
+        state = new ErrorState();
       }
     }
     else if(Pattern.validBasicOperator.hasMatch(value)){
-      context.setCurrentState(new OperatorState(context));
+      state = new OperatorState();
     }
     else if(value == ","){
       if(isMultiParam)
-        context.setCurrentState(new OperatorState(context));
+        state = new OperatorState();
       else
-        context.setCurrentState(new ErrorState(context));
+        state = new ErrorState();
     }
     else if(value == "="){
       // reaching here signifies a valid input expression
       if(counterValue > 0)
-        context.setCurrentState(new ErrorState(context));
+        state = new ErrorState();
       else
-        context.setCurrentState(new StartState(context));
-    }
-    else {
-      context.setCurrentState(new ErrorState(context));
+        state = new StartState();
     }
 
-    return counterValue;
+    return ParseLocation(state, counterValue);
   }
 
 }
