@@ -1,5 +1,4 @@
 import '../start_state.dart';
-import '../start_state.dart';
 import '../state.dart';
 
 class ValidationProperties{
