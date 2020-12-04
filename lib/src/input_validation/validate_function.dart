@@ -1,10 +1,14 @@
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
+import 'package:advanced_calculation/src/parse/expression_parser.dart';
+import 'package:advanced_calculation/src/translator/translate_pattern.dart';
 
 import 'start_state.dart';
 import 'state.dart';
 
 class ValidateFunction {
+  ExpressionParser parser = ExpressionParser();
+
   static final List<String> validFunctions = ["ln","log","sin","cos","tan", "abs", "csc","sec", "cot", "sqrt", "sinh", "cosh", "tanh",
     "asin", "acos", "atan", "acsc", "asec", "acot", "csch", "sech", "coth", "ceil","asinh", "acosh", "atanh", "acsch", "asech",
     "acoth", "floor", "round", "trunc", "fract"];
@@ -12,7 +16,7 @@ class ValidateFunction {
 
 
   List<String> _sanitizeInput(String input){
-    List<String> sanitizedInput = input.split(" ").where((item) => item.isNotEmpty).toList();
+    List<String> sanitizedInput = parser.padTokens(input).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
     sanitizedInput.add('=');
 
     return sanitizedInput;

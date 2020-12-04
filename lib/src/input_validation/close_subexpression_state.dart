@@ -6,6 +6,7 @@ import 'package:advanced_calculation/src/input_validation/start_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
 
 import 'error_state.dart';
+import 'next_operand_state.dart';
 
 class CloseSubExpressionState extends State {
 
@@ -21,11 +22,13 @@ class CloseSubExpressionState extends State {
       }
     }
     else if(Pattern.validBasicOperator.hasMatch(value) || (value == "," && this.multiParam)){
-        state = OperatorState(this.counter, this.multiParam);
+      state = OperatorState(this.counter, this.multiParam);
     }
     // reaching here signifies a valid input expression
     else if(value == "="  && this.counter <= 0){
-        state = StartState(this.counter, this.multiParam);
+      state = StartState(this.counter, this.multiParam);
+    }else if(Pattern.validOperand.hasMatch(value)){
+      state = NextOperandState(this.counter, this.multiParam);
     }
 
     return state;
