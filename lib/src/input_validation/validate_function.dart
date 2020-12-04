@@ -36,9 +36,6 @@ class ValidateFunction {
         location = location.currentState.getNextState(token, location.counter, isMultiParam);
         if(location.currentState is ErrorState)
           valid = false;
-      } else if(token == "-(") {
-          // handle expression special case and Increment the counter and update state
-          location = ParseLocation(OpenSubExpressionState(), location.counter + 1);
       } else if(multiParamFunctions.contains(token)){
         isMultiParam = true;
       } else if(!validFunctions.contains(token)) {
