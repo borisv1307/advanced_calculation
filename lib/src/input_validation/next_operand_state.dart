@@ -13,6 +13,7 @@ class NextOperandState extends State {
   @override
   State getNextState(String value){
     State state = ErrorState(this.counter,this.multiParam);
+
     if(Pattern.validCommaBasicOperator.hasMatch(value)){
       state = new OperatorState(this.counter,this.multiParam);
     }

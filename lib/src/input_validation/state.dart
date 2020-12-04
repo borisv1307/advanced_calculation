@@ -7,7 +7,6 @@ abstract class State {
 
   State(this.counter, this.multiParam);
 
-
   //abstract method
   State getNextState(String value);
 }

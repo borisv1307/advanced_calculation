@@ -2,7 +2,6 @@ import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/parse/expression_parser.dart';
 import 'package:advanced_calculation/src/translator/translate_pattern.dart';
-
 import 'start_state.dart';
 import 'state.dart';
 
@@ -18,7 +17,7 @@ class ValidateFunction {
   List<String> _sanitizeInput(String input){
     String trimmed = input;
     if(input.endsWith(',')){
-      trimmed = input.substring(input.length - 1); // remove the negative
+      trimmed = input.substring(input.length - 1); // handle special case
     }
     List<String> sanitizedInput = parser.padTokens(trimmed).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
 
@@ -60,7 +59,7 @@ class ValidateFunction {
   }
 
   bool testMatrixFunction(String expression){
-    List<String> input = expression.split(" ");
+    List<String> input = _sanitizeMatrixInput(expression);
     List<String> matrix1Values = input[0].replaceAll("&", "").split(RegExp(r'(!|,)'));
     String operator = input[1];
     List<String> matrix2Values = input[2].replaceAll("&", "").split(RegExp(r'(!|,)'));
@@ -172,5 +171,15 @@ class ValidateFunction {
     return true;
   }
 
+  List<String> _sanitizeMatrixInput(String input){
+      input = input.replaceAll("+", " + ");
+      input = input.replaceAll("−", " − ");
+      input = input.replaceAll("*", " * ");
+      input = input.replaceAll("/", " / ");
+
+      List<String> sanitizedInput = input.split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
+
+      return sanitizedInput;
+  }
 
 }
