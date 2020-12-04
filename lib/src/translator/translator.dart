@@ -1,6 +1,8 @@
+import 'package:advanced_calculation/src/parse/expression_parser.dart';
 import 'package:advanced_calculation/src/translator/translate_pattern.dart';
 
 class Translator {
+  ExpressionParser parser = ExpressionParser();
 
 // translates display values of a calculator expressions into proper format for processing
   String translate(String input) {
@@ -8,26 +10,19 @@ class Translator {
     if (input == null) return input;
     translated = _handleNegatives(input);
     translated = _addImpliedMultiply(translated);
-    translated = _fixSpacing(translated);
+    translated = parser.padTokens(translated);
+    translated = _convertSymbols(translated);
     translated = _addClosingParentheses(translated);
     return translated.trim();
   }
 
-  // corrects the expression's spacing regardless of previous whitespace
-  String _fixSpacing(String input) {
-    String result;
-    result = input. replaceAll("+", " + ");
-    result = result.replaceAll("−", " - ");
-    result = result.replaceAll("*", " * ");
-    result = result.replaceAll("/", " / ");
-    result = result.replaceAll("^", " ^ ");
-    result = result.replaceAll("(", " ( ");
-    result = result.replaceAll(")", " ) ");
-    result = result.replaceAll(",", " , ");
+  String _convertSymbols(String input){
+    String result = input.replaceAll(" ²", " ^ 2 ");
     result = result.replaceAll("²", " ^ 2 ");
     result = result.replaceAll("⁻¹", " ^ -1 ");
     result = result.replaceAll("√", "sqrt");
-    result = result.replaceAll(TranslatePattern.spacing, " ");
+    result = result.replaceAll("−", "-");
+
     return result;
   }
 

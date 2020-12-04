@@ -2,34 +2,24 @@ import 'package:advanced_calculation/src/input_validation/close_subexpression_st
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/operator_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
-import 'package:advanced_calculation/src/input_validation/start_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
-import 'package:advanced_calculation/src/input_validation/validate_function.dart';
+
+import 'error_state.dart';
 
 class NextOperandState extends State {
-  NextOperandState(ValidateFunction context) : super(context);
+
+  NextOperandState(int counter,bool multiParam) : super(counter, multiParam);
 
   @override
-  int getNextState(String value, int counterValue, bool isMultiParam) {
+  State getNextState(String value){
+    State state = ErrorState(this.counter,this.multiParam);
     if(Pattern.validCommaBasicOperator.hasMatch(value)){
-      context.setCurrentState(new OperatorState(context));
+      state = new OperatorState(this.counter,this.multiParam);
     }
-    else if(value == "="){
-      // reaching here signifies a valid input expression
-      if(counterValue > 0)
-        context.setCurrentState(new ErrorState(context));
-      else
-        context.setCurrentState(new StartState(context));
-    }
-
     else if(value.startsWith(")")){
-      counterValue = counterValue - 1;
-      context.setCurrentState(new CloseSubExpressionState(context));
-    }
-    else {
-      context.setCurrentState(new ErrorState(context));
+      state = new CloseSubExpressionState(this.counter - 1,this.multiParam);
     }
 
-    return counterValue;
+    return state;
   }
 }

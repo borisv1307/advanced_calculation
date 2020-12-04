@@ -2,27 +2,23 @@ import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/open_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
-import 'package:advanced_calculation/src/input_validation/validate_function.dart';
 import 'first_operand_state.dart';
-import 'validate_function.dart';
 
 class StartState extends State {
-  StartState(ValidateFunction context) : super(context);
+
+  StartState(int counter,bool multiParam) : super(counter, multiParam);
 
   @override
-  int getNextState(String value, int counterValue, bool isMultiParam){
+  State getNextState(String value){
+
+    State state = ErrorState(this.counter, this.multiParam);
     if(Pattern.validOperand.hasMatch(value)){
-      context.setCurrentState(new FirstOperandState(context));
+      state = new FirstOperandState(this.counter, this.multiParam);
     }
     else if(value == "("){
-      counterValue = counterValue + 1;
-      context.setCurrentState(new OpenSubExpressionState(context));
-    }
-    else {
-      context.setCurrentState(new ErrorState(context));
+      state = new OpenSubExpressionState(this.counter + 1, this.multiParam);
     }
 
-    return counterValue;
+    return state;
   }
-
 }

@@ -1,102 +1,62 @@
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
-import 'package:advanced_calculation/src/input_validation/start_state.dart';
-import 'package:advanced_calculation/src/input_validation/state.dart';
-import 'open_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
+import 'package:advanced_calculation/src/parse/expression_parser.dart';
+import 'package:advanced_calculation/src/translator/translate_pattern.dart';
+
+import 'start_state.dart';
+import 'state.dart';
 
 class ValidateFunction {
-  State currentState;
-  bool isMultiParam = false;
-  int multiParamCounter = 0; // Considers counting '(' for math functions with more than parameter
-  int counter = 0; // Considers counting '(' for math functions with 1 parameter
-  static final List<String> lengthTwoFunc = ["ln"];
-  static final List<String> lengthThreeFunc = ["log","sin","cos","tan", "abs", "csc","sec", "cot" ];
-  static final List<String> lengthFourFunc = ["sqrt", "sinh", "cosh", "tanh", "asin", "acos", "atan", "acsc", "asec", "acot", "csch", "sech", "coth", "ceil"];
-  static final List<String> lengthFiveFunc = ["asinh", "acosh", "atanh", "acsch", "asech", "acoth", "floor", "round", "trunc", "fract"];
-  static final List<String> lengthThreeMultiParamFunc = ["max", "min", "gcd", "lcm"];
+  ExpressionParser parser = ExpressionParser();
 
-  ValidateFunction(){
-    currentState= new StartState(this);
+  static final List<String> validFunctions = ["ln","log","sin","cos","tan", "abs", "csc","sec", "cot", "sqrt", "sinh", "cosh", "tanh",
+    "asin", "acos", "atan", "acsc", "asec", "acot", "csch", "sech", "coth", "ceil","asinh", "acosh", "atanh", "acsch", "asech",
+    "acoth", "floor", "round", "trunc", "fract", "√", '-'];
+  static final List<String> multiParamFunctions = ["max", "min", "gcd", "lcm"];
+  static final List<String> operators = ['*','/','−','+','(',')','^',','];
+
+  List<String> _sanitizeInput(String input){
+    String trimmed = input;
+    if(input.endsWith(',')){
+      trimmed = input.substring(input.length - 1); // remove the negative
+    }
+    List<String> sanitizedInput = parser.padTokens(trimmed).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
+
+    return sanitizedInput;
   }
 
-  void setCurrentState(State currentState) {
-    this.currentState = currentState;
-  }
-
-  State getCurrentState() {
-    return currentState;
-  }
-
-  List<String> initialize(String input){
-    this.counter = 0;
-    this.multiParamCounter = 0;
-    isMultiParam = false;
-    input = input + " = ";
-    List<String> inputString = input.split(" ");
-
-    for(int i = 0; i < inputString.length; i++){
-      if(inputString[i].isEmpty){
-        inputString.removeAt(i);
-      }
+  String _sanitizeToken(String token){
+    String sanitizedToken = token;
+    //handle special negatives for complex functions
+    if(sanitizedToken.startsWith('-') && sanitizedToken.length > 1) {
+      sanitizedToken = sanitizedToken.substring(1); // remove the negative
     }
 
-    return inputString;
-  }
-
-  void incrementCounter(){
-    if(isMultiParam)
-      this.multiParamCounter = this.multiParamCounter + 1;
-    else
-      this.counter = this.counter + 1;
+    return sanitizedToken;
   }
 
   bool testFunction(String input) {
-    List<String> inputString = initialize(input);
-    currentState= new StartState(this);
+    bool valid = true;
+    List<String> inputString = _sanitizeInput(input);
+    State currentState = StartState(0, false);
 
-    for(int i = 0; i < inputString.length; i++) {
-      //handle special negatives for complex functions
-      if(RegExp(r'^-[a-z]+$').hasMatch(inputString[i]) && inputString[i].length > 1) {
-        inputString[i] = inputString[i].substring(1); // remove the negative
-      }
+    for (int i = 0; (i < inputString.length && valid); i++) {
+      String token = _sanitizeToken(inputString[i]);
 
-      if(Pattern.validOperand.hasMatch(inputString[i]) || inputString[i].length == 1) {  // numbers or operands
-        if(this.isMultiParam)
-          this.multiParamCounter = currentState.getNextState(inputString[i], multiParamCounter, isMultiParam);
-        else
-          this.counter = currentState.getNextState(inputString[i], counter, isMultiParam);
-
-        if(currentState is ErrorState)
-          return false;
+      if (operators.contains(token) ||
+          Pattern.validOperand.hasMatch(token)) { // numbers or operands
+        currentState = currentState.getNextState(token);
+      } else if (multiParamFunctions.contains(token)) {
+        currentState.multiParam = true;
+      } else if (!validFunctions.contains(token)) {
+        valid = false;
       }
-      else if(inputString[i].length == 2) {
-        if(inputString[i] == "-(") {
-          // handle expression special case and Increment the counter and update state
-          incrementCounter();
-          currentState = new OpenSubExpressionState(this);
-        }
-        else if(lengthTwoFunc.contains(inputString[i]) == false)
-          return false;
+      if (currentState is ErrorState) {
+        valid = false;
       }
-      else if(inputString[i].length == 3) {
-        if(!lengthThreeFunc.contains(inputString[i]) && !lengthThreeMultiParamFunc.contains(inputString[i]) )
-          return false;
-        else if(lengthThreeMultiParamFunc.contains(inputString[i]))
-          isMultiParam = true;
-      }
-      else if(inputString[i].length == 4) {
-        if(lengthFourFunc.contains(inputString[i]) == false)
-          return false;
-      }
-      else if(inputString[i].length == 5) {
-        if(lengthFiveFunc.contains(inputString[i]) == false)
-          return false;
-      }
-      else
-        return false;
     }
 
-    return true;
+    return valid;
   }
 
   bool testMatrixFunction(String expression){
@@ -113,12 +73,14 @@ class ValidateFunction {
 
   bool checkValues(List<String> matrix1Values, List<String> matrix2Values){
     for(int i = 0; i < matrix1Values.length; i++){
-      if(!Pattern.validOperand.hasMatch(matrix1Values[i]))
+      String token = _sanitizeToken(matrix1Values[i]);
+      if(!Pattern.validOperand.hasMatch(token))
         return false;
     }
 
-    for(int i = 0; i < matrix2Values.length; i++){
-      if(!Pattern.validOperand.hasMatch(matrix2Values[i]))
+    for(int i = 0; i < matrix2Values.length; i++) {
+      String token = _sanitizeToken(matrix2Values[i]);
+      if (!Pattern.validOperand.hasMatch(token))
         return false;
     }
 

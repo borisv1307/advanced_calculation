@@ -2,16 +2,14 @@
 // It represents the Error state for the calculator
 
 import 'package:advanced_calculation/src/input_validation/state.dart';
-import 'package:advanced_calculation/src/input_validation/validate_function.dart';
-
-import 'validate_function.dart';
 
 class ErrorState extends State {
-  ErrorState(ValidateFunction context) : super(context);
+
+  ErrorState(int counter,bool multiParam) : super(counter, multiParam);
 
   @override
-  int getNextState(String value, int counterValue, bool isMultiParam) {
-    return counterValue;
+  State getNextState(String value){
+    return this;
   }
 
 }

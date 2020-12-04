@@ -1,46 +1,31 @@
 
 import 'package:advanced_calculation/src/input_validation/close_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
+import 'package:advanced_calculation/src/input_validation/open_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/operator_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
-import 'package:advanced_calculation/src/input_validation/start_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
-import 'package:advanced_calculation/src/input_validation/validate_function.dart';
-
-import 'validate_function.dart';
 
 class FirstOperandState extends State {
-  FirstOperandState(ValidateFunction context) : super(context);
+
+  FirstOperandState(int counter,bool multiParam) : super(counter, multiParam);
 
   @override
-  int getNextState(String value, int counterValue, bool isMultiParam) {
+  State getNextState(String value){
+    State state = ErrorState(this.counter, this.multiParam);
     if(Pattern.validBasicOperator.hasMatch(value)){
-      context.setCurrentState(new OperatorState(context));
+      state = new OperatorState(this.counter, this.multiParam);
     }
-    else if(value == ","){
-      if(isMultiParam)
-        context.setCurrentState(new OperatorState(context));
-      else
-        context.setCurrentState(new ErrorState(context));
-    }
-    else if(value == "="){
-      // reaching here signifies a valid input expression
-      if(counterValue > 0)
-        context.setCurrentState(new ErrorState(context));
-      else
-        context.setCurrentState(new StartState(context));
-    }
-    else if(value == "("){
-      context.setCurrentState(new ErrorState(context)); 
+    else if(value == "," && this.multiParam){
+      state = new OperatorState(this.counter, this.multiParam);
     }
     else if(value == ")"){
-      counterValue = counterValue - 1;
-      context.setCurrentState(new CloseSubExpressionState(context));
+      state = new CloseSubExpressionState(this.counter - 1, this.multiParam);
     }
-    else {
-      context.setCurrentState(new ErrorState(context));
+    else if(value == "("){
+      state = new OpenSubExpressionState(this.counter + 1, this.multiParam);
     }
 
-    return counterValue;
+    return state;
   }
 }

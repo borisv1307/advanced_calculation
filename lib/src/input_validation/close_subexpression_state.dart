@@ -4,45 +4,32 @@ import 'package:advanced_calculation/src/input_validation/operator_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/input_validation/start_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
-import 'package:advanced_calculation/src/input_validation/validate_function.dart';
 
-import 'validate_function.dart';
+import 'error_state.dart';
+import 'next_operand_state.dart';
 
 class CloseSubExpressionState extends State {
-  CloseSubExpressionState(ValidateFunction context) : super(context);
+
+  CloseSubExpressionState(int counter,bool multiParam) : super(counter, multiParam);
 
   @override
-  int getNextState(String value, int counterValue, bool isMultiParam){
-    if(value == ")"){
-      if(counterValue >= 1){
-        counterValue = counterValue - 1;
-        //remain in the same state
-      }
-      else {
-        context.setCurrentState(new ErrorState(context));
-      }
+  State getNextState(String value){
+    State state = ErrorState(this.counter, this.multiParam);
+    if(value == ")" && this.counter >= 1){
+      state= CloseSubExpressionState(this.counter - 1, this.multiParam);
+      //remain in the same state
     }
-    else if(Pattern.validBasicOperator.hasMatch(value)){
-      context.setCurrentState(new OperatorState(context));
+    else if(Pattern.validBasicOperator.hasMatch(value) || (value == "," && this.multiParam)){
+      state = OperatorState(this.counter, this.multiParam);
     }
-    else if(value == ","){
-      if(isMultiParam)
-        context.setCurrentState(new OperatorState(context));
-      else
-        context.setCurrentState(new ErrorState(context));
-    }
-    else if(value == "="){
-      // reaching here signifies a valid input expression
-      if(counterValue > 0)
-        context.setCurrentState(new ErrorState(context));
-      else
-        context.setCurrentState(new StartState(context));
-    }
-    else {
-      context.setCurrentState(new ErrorState(context));
+    // reaching here signifies a valid input expression
+    else if(value == "="  && this.counter <= 0){
+      state = StartState(this.counter, this.multiParam);
+    }else if(Pattern.validOperand.hasMatch(value)){
+      state = NextOperandState(this.counter, this.multiParam);
     }
 
-    return counterValue;
+    return state;
   }
 
 }
