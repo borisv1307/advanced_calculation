@@ -4,7 +4,7 @@ class ExpressionParser{
   String padTokens(String expression){
       String result;
       result = expression. replaceAll("+", " + ");
-      result = result.replaceAll("−", " - ");
+      result = result.replaceAll("−", " − ");
       result = result.replaceAll("*", " * ");
       result = result.replaceAll("/", " / ");
       result = result.replaceAll("^", " ^ ");

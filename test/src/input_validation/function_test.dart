@@ -170,6 +170,18 @@ void main(){
       });
     });
 
+    group('symbols', () {
+      test('e', () {
+        var string = '2𝑒';
+        expect(tester.testFunction(string), isTrue);
+      });
+
+      test('pi', () {
+        var string = '2𝜋';
+        expect(tester.testFunction(string), isTrue);
+      });
+    });
+
 
       group('valid numbers', () {
       test('positive int', () {
@@ -215,7 +227,7 @@ void main(){
       });
 
       test('-', () {
-        var string = '35-6523';
+        var string = '35−6523';
         expect(tester.testFunction(string), equals(true));
       });
 

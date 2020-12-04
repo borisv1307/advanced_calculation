@@ -13,7 +13,7 @@ class ValidateFunction {
     "asin", "acos", "atan", "acsc", "asec", "acot", "csch", "sech", "coth", "ceil","asinh", "acosh", "atanh", "acsch", "asech",
     "acoth", "floor", "round", "trunc", "fract", "√"];
   static final List<String> multiParamFunctions = ["max", "min", "gcd", "lcm"];
-  static final List<String> operands = ['*','/','-','+','(',')','^',',','²'];
+  static final List<String> operators = ['*','/','−','+','(',')','^',','];
 
   List<String> _sanitizeInput(String input){
     String trimmed = input;
@@ -32,8 +32,6 @@ class ValidateFunction {
     if(sanitizedToken.startsWith('-') && sanitizedToken.length > 1) {
       sanitizedToken = sanitizedToken.substring(1); // remove the negative
     }
-    sanitizedToken = sanitizedToken.replaceAll('²', '');
-    sanitizedToken = sanitizedToken.replaceAll('⁻¹', '');
 
     return sanitizedToken;
   }
@@ -46,7 +44,7 @@ class ValidateFunction {
     for(int i=0;(i<inputString.length && valid);i++) {
       String token = _sanitizeToken(inputString[i]);
 
-      if(operands.contains(token) || Pattern.validNumber.hasMatch(token)) {  // numbers or operands
+      if(operators.contains(token) || Pattern.validOperand.hasMatch(token)) {  // numbers or operands
         currentState = currentState.getNextState(token);
       } else if(multiParamFunctions.contains(token)){
         currentState.multiParam = true;
