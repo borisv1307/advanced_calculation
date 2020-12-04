@@ -5,29 +5,27 @@ import 'package:advanced_calculation/src/input_validation/operator_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/input_validation/start_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
-import 'package:advanced_calculation/src/input_validation/tracking/validation_properties.dart';
-import 'package:advanced_calculation/src/input_validation/tracking/validation_tracking.dart';
 
 class FirstOperandState extends State {
 
+  FirstOperandState(int counter,bool multiParam) : super(counter, multiParam);
+
   @override
-  ValidationProperties getNextState(String value, ValidationTracking tracking){
-    State state = ErrorState();
-    int counterValue = tracking.properties.counter;
+  State getNextState(String value){
+    State state = ErrorState(this.counter, this.multiParam);
     if(Pattern.validBasicOperator.hasMatch(value)){
-      state = new OperatorState();
+      state = new OperatorState(this.counter, this.multiParam);
     }
-    else if(value == "," && tracking.multiParam){
-      state = new OperatorState();
+    else if(value == "," && this.multiParam){
+      state = new OperatorState(this.counter, this.multiParam);
     }
-    else if(value == "=" && counterValue <= 0){
-      state = new StartState();
+    else if(value == "=" && this.counter <= 0){
+      state = new StartState(this.counter, this.multiParam);
     }
     else if(value == ")"){
-      counterValue = counterValue - 1;
-      state = new CloseSubExpressionState();
+      state = new CloseSubExpressionState(this.counter - 1, this.multiParam);
     }
 
-    return ValidationProperties(state,counterValue);
+    return state;
   }
 }

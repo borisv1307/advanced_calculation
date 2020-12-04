@@ -2,14 +2,14 @@
 // It represents the Error state for the calculator
 
 import 'package:advanced_calculation/src/input_validation/state.dart';
-import 'package:advanced_calculation/src/input_validation/tracking/validation_properties.dart';
-import 'package:advanced_calculation/src/input_validation/tracking/validation_tracking.dart';
 
 class ErrorState extends State {
 
+  ErrorState(int counter,bool multiParam) : super(counter, multiParam);
+
   @override
-  ValidationProperties getNextState(String value, ValidationTracking tracking){
-    return ValidationProperties(ErrorState(), tracking.properties.counter);
+  State getNextState(String value){
+    return this;
   }
 
 }
