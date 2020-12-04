@@ -20,24 +20,12 @@ class CloseSubExpressionState extends State {
         state= CloseSubExpressionState();
         //remain in the same state
       }
-      else {
-        state = new ErrorState();
-      }
     }
-    else if(Pattern.validBasicOperator.hasMatch(value)){
-      state = new OperatorState();
-    }
-    else if(value == ","){
-      if(tracking.multiParam)
+    else if(Pattern.validBasicOperator.hasMatch(value) || (value == "," && tracking.multiParam)){
         state = new OperatorState();
-      else
-        state = new ErrorState();
     }
-    else if(value == "="){
-      // reaching here signifies a valid input expression
-      if(counterValue > 0)
-        state = new ErrorState();
-      else
+    // reaching here signifies a valid input expression
+    else if(value == "="  && counterValue <= 0){
         state = new StartState();
     }
 

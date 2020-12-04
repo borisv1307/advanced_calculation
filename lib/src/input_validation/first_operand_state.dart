@@ -17,21 +17,11 @@ class FirstOperandState extends State {
     if(Pattern.validBasicOperator.hasMatch(value)){
       state = new OperatorState();
     }
-    else if(value == ","){
-      if(tracking.multiParam)
-        state = new OperatorState();
-      else
-        state = new ErrorState();
+    else if(value == "," && tracking.multiParam){
+      state = new OperatorState();
     }
-    else if(value == "="){
-      // reaching here signifies a valid input expression
-      if(counterValue > 0)
-        state = new ErrorState();
-      else
-        state = new StartState();
-    }
-    else if(value == "("){
-      state = new ErrorState();
+    else if(value == "=" && counterValue <= 0){
+      state = new StartState();
     }
     else if(value == ")"){
       counterValue = counterValue - 1;

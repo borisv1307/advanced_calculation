@@ -20,12 +20,6 @@ class OpenSubExpressionState extends State {
     else if(Pattern.validOperand.hasMatch(value)){
       state = new FirstOperandState();
     }
-    else if(Pattern.validNoPlusMinusOperator.hasMatch(value)){
-      state = new ErrorState();
-    }
-    else {
-      state = new ErrorState();
-    }
 
     return ValidationProperties(state, counterValue);
   }

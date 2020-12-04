@@ -10,21 +10,15 @@ class OperatorState extends State {
 
   @override
   ValidationProperties getNextState(String value, ValidationTracking tracking) {
-      int counterValue = tracking.properties.counter;
-     State state = ErrorState();
-     if(Pattern.validOperand.hasMatch(value)){
-       state = new NextOperandState();
-      }
-      else if(Pattern.validAllOperator.hasMatch(value)){
-        state = new ErrorState();
-      }
-      else if(value == "("){
-        counterValue = counterValue + 1;
-        state = new OpenSubExpressionState();
-      }
-      else {
-        state = new ErrorState();
-      }
+    int counterValue = tracking.properties.counter;
+    State state = ErrorState();
+    if(Pattern.validOperand.hasMatch(value)){
+      state = new NextOperandState();
+    }
+    else if(value == "("){
+      counterValue = counterValue + 1;
+      state = new OpenSubExpressionState();
+    }
 
     return ValidationProperties(state, counterValue);
   }

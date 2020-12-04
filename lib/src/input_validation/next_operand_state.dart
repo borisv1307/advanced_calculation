@@ -18,14 +18,10 @@ class NextOperandState extends State {
     if(Pattern.validCommaBasicOperator.hasMatch(value)){
       state = new OperatorState();
     }
-    else if(value == "="){
-      // reaching here signifies a valid input expression
-      if(counterValue > 0)
-        state = new ErrorState();
-      else
-        state = new StartState();
+    // reaching here signifies a valid input expression
+    else if(value == "=" && counterValue <= 0){
+      state = new StartState();
     }
-
     else if(value.startsWith(")")){
       counterValue = counterValue - 1;
       state = new CloseSubExpressionState();
