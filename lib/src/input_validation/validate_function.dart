@@ -9,11 +9,10 @@ class ValidateFunction {
   bool isMultiParam = false;
   int multiParamCounter = 0; // Considers counting '(' for math functions with more than parameter
   int counter = 0; // Considers counting '(' for math functions with 1 parameter
-  static final List<String> lengthTwoFunc = ["ln"];
-  static final List<String> lengthThreeFunc = ["log","sin","cos","tan", "abs", "csc","sec", "cot" ];
-  static final List<String> lengthFourFunc = ["sqrt", "sinh", "cosh", "tanh", "asin", "acos", "atan", "acsc", "asec", "acot", "csch", "sech", "coth", "ceil"];
-  static final List<String> lengthFiveFunc = ["asinh", "acosh", "atanh", "acsch", "asech", "acoth", "floor", "round", "trunc", "fract"];
-  static final List<String> lengthThreeMultiParamFunc = ["max", "min", "gcd", "lcm"];
+  static final List<String> validFunctions = ["ln","log","sin","cos","tan", "abs", "csc","sec", "cot", "sqrt", "sinh", "cosh", "tanh",
+    "asin", "acos", "atan", "acsc", "asec", "acot", "csch", "sech", "coth", "ceil","asinh", "acosh", "atanh", "acsch", "asech",
+    "acoth", "floor", "round", "trunc", "fract"];
+  static final List<String> multiParamFunctions = ["max", "min", "gcd", "lcm"];
 
   ValidateFunction(){
     currentState= new StartState(this);
@@ -27,18 +26,12 @@ class ValidateFunction {
     return currentState;
   }
 
-  List<String> initialize(String input){
+  List<String> _initialize(String input){
     this.counter = 0;
     this.multiParamCounter = 0;
     isMultiParam = false;
     input = input + " = ";
-    List<String> inputString = input.split(" ");
-
-    for(int i = 0; i < inputString.length; i++){
-      if(inputString[i].isEmpty){
-        inputString.removeAt(i);
-      }
-    }
+    List<String> inputString = input.split(" ").where((item) => item.isNotEmpty).toList();
 
     return inputString;
   }
@@ -51,7 +44,7 @@ class ValidateFunction {
   }
 
   bool testFunction(String input) {
-    List<String> inputString = initialize(input);
+    List<String> inputString = _initialize(input);
     currentState= new StartState(this);
 
     for(int i = 0; i < inputString.length; i++) {
@@ -68,31 +61,13 @@ class ValidateFunction {
 
         if(currentState is ErrorState)
           return false;
-      }
-      else if(inputString[i].length == 2) {
-        if(inputString[i] == "-(") {
+      } else if(inputString[i] == "-(") {
           // handle expression special case and Increment the counter and update state
           incrementCounter();
           currentState = new OpenSubExpressionState(this);
-        }
-        else if(lengthTwoFunc.contains(inputString[i]) == false)
-          return false;
-      }
-      else if(inputString[i].length == 3) {
-        if(!lengthThreeFunc.contains(inputString[i]) && !lengthThreeMultiParamFunc.contains(inputString[i]) )
-          return false;
-        else if(lengthThreeMultiParamFunc.contains(inputString[i]))
-          isMultiParam = true;
-      }
-      else if(inputString[i].length == 4) {
-        if(lengthFourFunc.contains(inputString[i]) == false)
-          return false;
-      }
-      else if(inputString[i].length == 5) {
-        if(lengthFiveFunc.contains(inputString[i]) == false)
-          return false;
-      }
-      else {
+      } else if(multiParamFunctions.contains(inputString[i])){
+        isMultiParam = true;
+      } else if(!validFunctions.contains(inputString[i])) {
         return false;
       }
     }
