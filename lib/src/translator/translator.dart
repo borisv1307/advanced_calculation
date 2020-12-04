@@ -17,7 +17,8 @@ class Translator {
   }
 
   String _convertSymbols(String input){
-    String result = input.replaceAll("²", " ^ 2 ");
+    String result = input.replaceAll(" ²", " ^ 2 ");
+    result = result.replaceAll("²", " ^ 2 ");
     result = result.replaceAll("⁻¹", " ^ -1 ");
     result = result.replaceAll("√", "sqrt");
 

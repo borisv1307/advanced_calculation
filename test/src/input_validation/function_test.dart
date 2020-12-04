@@ -126,8 +126,8 @@ void main(){
 
     group('invalid pairs of parentheses', () {
       test('no unmatched open', () {
-        var string = '2*((2 )';
-        expect(tester.testFunction(string), equals(false));
+        var string = '2*((2)';
+        expect(tester.testFunction(string), isTrue);
       });
 
       test('no unmatched close', () {
@@ -232,6 +232,16 @@ void main(){
       test('^', () {
         var string = '3^4';
         expect(tester.testFunction(string), equals(true));
+      });
+
+      test('squared', () {
+        var string = '2²';
+        expect(tester.testFunction(string), isTrue);
+      });
+
+      test('inverse', () {
+        var string = '3⁻¹';
+        expect(tester.testFunction(string), isTrue);
       });
     });
 
@@ -399,6 +409,11 @@ void main(){
       test('fract', () {
         var string = 'fract(0.5)';
         expect(tester.testFunction(string), equals(true));
+      });
+
+      test('square root', () {
+        var expression = '√(4)';
+        expect(tester.testFunction(expression), isTrue);
       });
     });
 

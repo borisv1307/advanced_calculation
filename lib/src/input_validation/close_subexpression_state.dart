@@ -15,11 +15,9 @@ class CloseSubExpressionState extends State {
   @override
   State getNextState(String value){
     State state = ErrorState(this.counter, this.multiParam);
-    if(value == ")"){
-      if(this.counter >= 1){
-        state= CloseSubExpressionState(this.counter - 1, this.multiParam);
-        //remain in the same state
-      }
+    if(value == ")" && this.counter >= 1){
+      state= CloseSubExpressionState(this.counter - 1, this.multiParam);
+      //remain in the same state
     }
     else if(Pattern.validBasicOperator.hasMatch(value) || (value == "," && this.multiParam)){
       state = OperatorState(this.counter, this.multiParam);

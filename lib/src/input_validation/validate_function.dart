@@ -11,13 +11,17 @@ class ValidateFunction {
 
   static final List<String> validFunctions = ["ln","log","sin","cos","tan", "abs", "csc","sec", "cot", "sqrt", "sinh", "cosh", "tanh",
     "asin", "acos", "atan", "acsc", "asec", "acot", "csch", "sech", "coth", "ceil","asinh", "acosh", "atanh", "acsch", "asech",
-    "acoth", "floor", "round", "trunc", "fract"];
+    "acoth", "floor", "round", "trunc", "fract", "√"];
   static final List<String> multiParamFunctions = ["max", "min", "gcd", "lcm"];
-
+  static final List<String> operands = ['*','/','-','+','(',')','^',',','²'];
 
   List<String> _sanitizeInput(String input){
-    List<String> sanitizedInput = parser.padTokens(input).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
-    sanitizedInput.add('=');
+    String trimmed = input;
+    if(input.endsWith(',')){
+      trimmed = input.substring(input.length - 1); // remove the negative
+    }
+
+    List<String> sanitizedInput = parser.padTokens(trimmed).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
 
     return sanitizedInput;
   }
@@ -28,6 +32,9 @@ class ValidateFunction {
     if(sanitizedToken.startsWith('-') && sanitizedToken.length > 1) {
       sanitizedToken = sanitizedToken.substring(1); // remove the negative
     }
+    sanitizedToken = sanitizedToken.replaceAll('²', '');
+    sanitizedToken = sanitizedToken.replaceAll('⁻¹', '');
+
     return sanitizedToken;
   }
 
@@ -39,7 +46,7 @@ class ValidateFunction {
     for(int i=0;(i<inputString.length && valid);i++) {
       String token = _sanitizeToken(inputString[i]);
 
-      if(Pattern.validOperand.hasMatch(token) || token.length == 1) {  // numbers or operands
+      if(operands.contains(token) || Pattern.validNumber.hasMatch(token)) {  // numbers or operands
         currentState = currentState.getNextState(token);
       } else if(multiParamFunctions.contains(token)){
         currentState.multiParam = true;

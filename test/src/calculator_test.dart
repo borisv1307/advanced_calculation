@@ -24,7 +24,7 @@ void main(){
 
       when(loader.loadCalculateFunction()).thenReturn(calculateFunction);
       when(translator.translate('test input')).thenReturn('test expression');
-      when(validator.testFunction('test expression')).thenReturn(false);
+      when(validator.testFunction('test input')).thenReturn(false);
 
       Calculator calculator = Calculator(loader: loader,validator: validator,translator: translator);
       bool thrown = false;
