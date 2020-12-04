@@ -18,11 +18,13 @@ class ValidateFunction {
   }
 
   bool testFunction(String input) {
+    bool valid = true;
+
     bool isMultiParam = false;
     List<String> inputString = _sanitizeInput(input);
     ParseLocation location = ParseLocation();
 
-    for(int i=0;i<inputString.length;i++) {
+    for(int i=0;(i<inputString.length && valid);i++) {
       String token = inputString[i];
 
       //handle special negatives for complex functions
@@ -32,20 +34,19 @@ class ValidateFunction {
 
       if(Pattern.validOperand.hasMatch(token) || token.length == 1) {  // numbers or operands
         location = location.currentState.getNextState(token, location.counter, isMultiParam);
-
         if(location.currentState is ErrorState)
-          return false;
+          valid = false;
       } else if(token == "-(") {
           // handle expression special case and Increment the counter and update state
           location = ParseLocation(OpenSubExpressionState(), location.counter + 1);
       } else if(multiParamFunctions.contains(token)){
         isMultiParam = true;
       } else if(!validFunctions.contains(token)) {
-        return false;
+        valid =  false;
       }
     }
 
-    return true;
+    return valid;
   }
 
 }
