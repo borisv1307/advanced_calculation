@@ -1,9 +1,12 @@
 import 'start_state.dart';
+import 'start_state.dart';
 import 'state.dart';
 
 class ParseLocation{
-  int counter = 0;
-  State currentState;
+  final int counter;
+  final State currentState;
 
-  ParseLocation(this.currentState, this.counter);
+  ParseLocation([State currentState, this.counter = 0]):
+      this.currentState = currentState ?? StartState();
+
 }
