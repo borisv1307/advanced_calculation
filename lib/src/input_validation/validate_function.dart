@@ -1,7 +1,7 @@
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
-import 'package:advanced_calculation/src/input_validation/tracking/validation_tracking.dart';
 
+import 'start_state.dart';
 import 'state.dart';
 
 class ValidateFunction {
@@ -30,21 +30,20 @@ class ValidateFunction {
   bool testFunction(String input) {
     bool valid = true;
     List<String> inputString = _sanitizeInput(input);
-    ValidationTracking tracking = ValidationTracking();
+    State currentState = StartState(0, false);
 
     for(int i=0;(i<inputString.length && valid);i++) {
       String token = _sanitizeToken(inputString[i]);
 
       if(Pattern.validOperand.hasMatch(token) || token.length == 1) {  // numbers or operands
-        State currentState = tracking.properties.currentState;
-        tracking.properties = currentState.getNextState(token, tracking);
+        currentState = currentState.getNextState(token);
       } else if(multiParamFunctions.contains(token)){
-        tracking.multiParam = true;
+        currentState.multiParam = true;
       } else if(!validFunctions.contains(token)) {
         valid =  false;
       }
 
-      if(tracking.properties.currentState is ErrorState) {
+      if(currentState is ErrorState) {
         valid = false;
       }
     }

@@ -3,24 +3,22 @@ import 'package:advanced_calculation/src/input_validation/next_operand_state.dar
 import 'package:advanced_calculation/src/input_validation/open_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
-import 'package:advanced_calculation/src/input_validation/tracking/validation_properties.dart';
-import 'package:advanced_calculation/src/input_validation/tracking/validation_tracking.dart';
 
 class OperatorState extends State {
 
+  OperatorState(int counter,bool multiParam) : super(counter, multiParam);
+
   @override
-  ValidationProperties getNextState(String value, ValidationTracking tracking) {
-    int counterValue = tracking.properties.counter;
-    State state = ErrorState();
+  State getNextState(String value) {
+    State state = ErrorState(this.counter, this.multiParam);
     if(Pattern.validOperand.hasMatch(value)){
-      state = new NextOperandState();
+      state = new NextOperandState(this.counter, this.multiParam);
     }
     else if(value == "("){
-      counterValue = counterValue + 1;
-      state = new OpenSubExpressionState();
+      state = new OpenSubExpressionState(this.counter + 1, this.multiParam);
     }
 
-    return ValidationProperties(state, counterValue);
+    return state;
   }
 
 }
