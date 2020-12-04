@@ -1,7 +1,8 @@
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
-import 'package:advanced_calculation/src/input_validation/parse_location.dart';
-import 'open_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
+import 'package:advanced_calculation/src/input_validation/tracking/validation_tracking.dart';
+
+import 'state.dart';
 
 class ValidateFunction {
   static final List<String> validFunctions = ["ln","log","sin","cos","tan", "abs", "csc","sec", "cot", "sqrt", "sinh", "cosh", "tanh",
@@ -11,35 +12,40 @@ class ValidateFunction {
 
 
   List<String> _sanitizeInput(String input){
-    input = input + " = ";
-    List<String> inputString = input.split(" ").where((item) => item.isNotEmpty).toList();
+    List<String> sanitizedInput = input.split(" ").where((item) => item.isNotEmpty).toList();
+    sanitizedInput.add('=');
 
-    return inputString;
+    return sanitizedInput;
+  }
+
+  String _sanitizeToken(String token){
+    String sanitizedToken = token;
+    //handle special negatives for complex functions
+    if(sanitizedToken.startsWith('-') && sanitizedToken.length > 1) {
+      sanitizedToken = sanitizedToken.substring(1); // remove the negative
+    }
+    return sanitizedToken;
   }
 
   bool testFunction(String input) {
     bool valid = true;
-
-    bool isMultiParam = false;
     List<String> inputString = _sanitizeInput(input);
-    ParseLocation location = ParseLocation();
+    ValidationTracking tracking = ValidationTracking();
 
     for(int i=0;(i<inputString.length && valid);i++) {
-      String token = inputString[i];
-
-      //handle special negatives for complex functions
-      if(token.startsWith('-') && token.length > 1) {
-        token = token.substring(1); // remove the negative
-      }
+      String token = _sanitizeToken(inputString[i]);
 
       if(Pattern.validOperand.hasMatch(token) || token.length == 1) {  // numbers or operands
-        location = location.currentState.getNextState(token, location.counter, isMultiParam);
-        if(location.currentState is ErrorState)
-          valid = false;
+        State currentState = tracking.properties.currentState;
+        tracking.properties = currentState.getNextState(token, tracking);
       } else if(multiParamFunctions.contains(token)){
-        isMultiParam = true;
+        tracking.multiParam = true;
       } else if(!validFunctions.contains(token)) {
         valid =  false;
+      }
+
+      if(tracking.properties.currentState is ErrorState) {
+        valid = false;
       }
     }
 

@@ -1,19 +1,20 @@
 import 'package:advanced_calculation/src/input_validation/close_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/operator_state.dart';
-import 'package:advanced_calculation/src/input_validation/parse_location.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/input_validation/start_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
-import 'package:advanced_calculation/src/input_validation/validate_function.dart';
+import 'package:advanced_calculation/src/input_validation/tracking/validation_properties.dart';
+import 'package:advanced_calculation/src/input_validation/tracking/validation_tracking.dart';
 
 import 'error_state.dart';
 
 class NextOperandState extends State {
 
   @override
-  ParseLocation getNextState(String value, int counterValue, bool isMultiParam) {
+  ValidationProperties getNextState(String value, ValidationTracking tracking){
     State state = ErrorState();
+    int counterValue = tracking.properties.counter;
     if(Pattern.validCommaBasicOperator.hasMatch(value)){
       state = new OperatorState();
     }
@@ -30,6 +31,6 @@ class NextOperandState extends State {
       state = new CloseSubExpressionState();
     }
 
-    return ParseLocation(state, counterValue);
+    return ValidationProperties(state, counterValue);
   }
 }
