@@ -1,31 +1,27 @@
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
-import 'package:advanced_calculation/src/input_validation/validate_function.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
+import 'package:advanced_calculation/src/input_validation/tracking/validation_properties.dart';
+import 'package:advanced_calculation/src/input_validation/tracking/validation_tracking.dart';
 import 'first_operand_state.dart';
-import 'validate_function.dart';
 
 class OpenSubExpressionState extends State {
-  OpenSubExpressionState(ValidateFunction context) : super(context);
 
   // The method is used to determine the next state for a given value
   // and used for transitioning from one state to another
   @override
-  int getNextState(String value, int counterValue, bool isMultiParam){
+  ValidationProperties getNextState(String value, ValidationTracking tracking){
+    State state = ErrorState();
+    int counterValue = tracking.properties.counter;
     if(value == "("){
       counterValue = counterValue + 1;
+      state = OpenSubExpressionState();
     }
     else if(Pattern.validOperand.hasMatch(value)){
-      context.setCurrentState(new FirstOperandState(context));
-    }
-    else if(Pattern.validNoPlusMinusOperator.hasMatch(value)){
-      context.setCurrentState(new ErrorState(context));
-    }
-    else {
-      context.setCurrentState(new ErrorState(context));
+      state = new FirstOperandState();
     }
 
-    return counterValue;
+    return ValidationProperties(state, counterValue);
   }
 
 }

@@ -2,27 +2,25 @@ import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/open_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/input_validation/state.dart';
-import 'package:advanced_calculation/src/input_validation/validate_function.dart';
+import 'package:advanced_calculation/src/input_validation/tracking/validation_properties.dart';
+import 'package:advanced_calculation/src/input_validation/tracking/validation_tracking.dart';
 import 'first_operand_state.dart';
-import 'validate_function.dart';
 
 class StartState extends State {
-  StartState(ValidateFunction context) : super(context);
 
   @override
-  int getNextState(String value, int counterValue, bool isMultiParam){
+  ValidationProperties getNextState(String value, ValidationTracking tracking){
+    State state = ErrorState();
+    int counterValue = tracking.properties.counter;
     if(Pattern.validOperand.hasMatch(value)){
-      context.setCurrentState(new FirstOperandState(context));
+      state = new FirstOperandState();
     }
     else if(value == "("){
       counterValue = counterValue + 1;
-      context.setCurrentState(new OpenSubExpressionState(context));
-    }
-    else {
-      context.setCurrentState(new ErrorState(context));
+      state = new OpenSubExpressionState();
     }
 
-    return counterValue;
+    return ValidationProperties(state, counterValue);
   }
 
 }
