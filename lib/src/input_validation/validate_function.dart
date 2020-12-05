@@ -16,11 +16,7 @@ class ValidateFunction {
   static final List<String> operators = ['*','/','−','+','(',')','^',','];
 
   List<String> _sanitizeInput(String input){
-    String trimmed = input;
-    if(input.endsWith(',')){
-      trimmed = input.substring(0,input.length - 1);
-    }
-    List<String> sanitizedInput = parser.padTokens(trimmed).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
+    List<String> sanitizedInput = parser.padTokens(input).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
 
     return sanitizedInput;
   }

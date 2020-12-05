@@ -43,7 +43,7 @@ void main(){
 
       test('invalid comma position 2', () {
         var string = 'max(4),';
-        expect(tester.checkSyntax(string), -1);//TODO
+        expect(tester.checkSyntax(string), 6);
       });
 
       test('invalid comma position 3', () {
