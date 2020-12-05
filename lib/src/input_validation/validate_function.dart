@@ -59,15 +59,19 @@ class ValidateFunction {
   }
 
   bool testMatrixFunction(String expression){
+    bool valid = false;
     List<String> input = _sanitizeMatrixInput(expression);
-    List<String> matrix1Values = input[0].replaceAll("&", "").split(RegExp(r'(!|,)'));
-    String operator = input[1];
-    List<String> matrix2Values = input[2].replaceAll("&", "").split(RegExp(r'(!|,)'));
 
-    if(validateOperator(operator) && validateSize(input) && checkValues(matrix1Values, matrix2Values))
-      return true;
-    else
-      return false;
+    if(input.length > 1) {
+      List<String> matrix1Values = input[0].replaceAll("&", "").split(RegExp(r'(!|,)'));
+      String operator = input[1];
+      List<String> matrix2Values = input[2].replaceAll("&", "").split(RegExp(r'(!|,)'));
+
+      if (validateOperator(operator) && validateSize(input) && checkValues(matrix1Values, matrix2Values))
+        valid = true;
+    }
+
+    return valid;
   }
 
   bool checkValues(List<String> matrix1Values, List<String> matrix2Values){
