@@ -11,6 +11,7 @@ class OperatorState extends State {
   @override
   State getNextState(String value) {
     State state = ErrorState(this.counter, this.multiParam);
+
     if(Pattern.validOperand.hasMatch(value)){
       state = new NextOperandState(this.counter, this.multiParam);
     }

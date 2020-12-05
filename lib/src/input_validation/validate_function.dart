@@ -2,7 +2,6 @@ import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/parse/expression_parser.dart';
 import 'package:advanced_calculation/src/translator/translate_pattern.dart';
-
 import 'start_state.dart';
 import 'state.dart';
 
@@ -21,7 +20,7 @@ class ValidateFunction {
     return sanitizedInput;
   }
 
-  String _sanitizeToken(String token){
+  String sanitizeToken(String token){
     String sanitizedToken = token;
     //handle special negatives for complex functions
     if(sanitizedToken.startsWith('-') && sanitizedToken.length > 1) {
@@ -37,11 +36,12 @@ class ValidateFunction {
     State currentState = StartState(0, false);
 
     for(int i=0;(i<inputString.length && invalidTokenIndex == -1);i++) {
-      String token = _sanitizeToken(inputString[i]);
+      String token = sanitizeToken(inputString[i]);
 
-      if(operators.contains(token) || Pattern.validOperand.hasMatch(token)) {  // numbers or operands
+      if (operators.contains(token) ||
+          Pattern.validOperand.hasMatch(token)) { // numbers or operands
         currentState = currentState.getNextState(token);
-      } else if(multiParamFunctions.contains(token)){
+      } else if (multiParamFunctions.contains(token)) {
         currentState.multiParam = true;
       } else if(!validFunctions.contains(token)) {
         invalidTokenIndex =  i;
