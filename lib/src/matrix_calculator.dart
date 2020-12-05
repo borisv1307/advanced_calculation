@@ -12,6 +12,8 @@ class MatrixCalculator{
   MatrixCalculator() {
     matrixFunction = getLibraryLoader().loadMatrixFunction();
     translator = Translator();
+    tester = ValidateFunction();
+
   }
 
   LibraryLoader getLibraryLoader(){
