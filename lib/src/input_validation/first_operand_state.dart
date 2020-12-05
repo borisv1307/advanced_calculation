@@ -1,4 +1,3 @@
-
 import 'package:advanced_calculation/src/input_validation/close_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/open_subexpression_state.dart';
