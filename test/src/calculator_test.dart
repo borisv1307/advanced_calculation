@@ -24,7 +24,7 @@ void main(){
 
       when(loader.loadCalculateFunction()).thenReturn(calculateFunction);
       when(translator.translate('test input')).thenReturn('test expression');
-      when(validator.testFunction('test input')).thenReturn(false);
+      when(validator.findSyntaxError('test input')).thenReturn(3);
 
       Calculator calculator = Calculator(loader: loader,validator: validator,translator: translator);
       bool thrown = false;
@@ -32,7 +32,7 @@ void main(){
         calculator.calculate('test input');
       } on SyntaxException catch (e){
         thrown = true;
-        expect(e.index,0);
+        expect(e.index,3);
       }
       expect(thrown,isTrue);
   });

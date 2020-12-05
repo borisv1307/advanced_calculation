@@ -17,7 +17,7 @@ class CloseSubExpressionState extends State {
       state= CloseSubExpressionState(this.counter - 1, this.multiParam);
       //remain in the same state
     }
-    else if(Pattern.validBasicOperator.hasMatch(value) || (value == "," && this.multiParam)){
+    else if(Pattern.validBasicOperator.hasMatch(value) || (value == "," && this.multiParam && this.counter > 0)){
       state = OperatorState(this.counter, this.multiParam);
     }
     else if(Pattern.validOperand.hasMatch(value)){
