@@ -1,7 +1,7 @@
-import 'package:advanced_calculation/src/input_validation/validate_function.dart';
+import 'package:advanced_calculation/src/input_validation/validate_matrix_function.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-ValidateFunction tester = new ValidateFunction();
+ValidateMatrixFunction tester = new ValidateMatrixFunction();
 
 void main() {
   group('test matrices validation', () {

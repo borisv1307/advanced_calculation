@@ -1,4 +1,5 @@
 import 'package:advanced_calculation/src/input_validation/validate_function.dart';
+import 'package:advanced_calculation/src/input_validation/validate_matrix_function.dart';
 import 'package:advanced_calculation/src/library_loader.dart';
 import 'package:advanced_calculation/src/translator/translator.dart';
 import 'package:ffi/ffi.dart';
@@ -7,12 +8,12 @@ import 'dart:ffi';
 class MatrixCalculator{
   MatrixFunction matrixFunction;
   Translator translator;
-  ValidateFunction tester;
+  ValidateMatrixFunction tester;
 
   MatrixCalculator() {
     matrixFunction = getLibraryLoader().loadMatrixFunction();
     translator = Translator();
-    tester = ValidateFunction();
+    tester = ValidateMatrixFunction();
 
   }
 
