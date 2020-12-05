@@ -18,7 +18,7 @@ class ValidateFunction {
   List<String> _sanitizeInput(String input){
     String trimmed = input;
     if(input.endsWith(',')){
-      trimmed = input.substring(input.length - 1); // remove the negative
+      trimmed = input.substring(0,input.length - 1);
     }
     List<String> sanitizedInput = parser.padTokens(trimmed).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
 
@@ -35,12 +35,12 @@ class ValidateFunction {
     return sanitizedToken;
   }
 
-  bool testFunction(String input) {
-    bool valid = true;
+  int checkSyntax(String input) {
+    int invalidTokenIndex = -1;
     List<String> inputString = _sanitizeInput(input);
     State currentState = StartState(0, false);
 
-    for(int i=0;(i<inputString.length && valid);i++) {
+    for(int i=0;(i<inputString.length && invalidTokenIndex == -1);i++) {
       String token = _sanitizeToken(inputString[i]);
 
       if(operators.contains(token) || Pattern.validOperand.hasMatch(token)) {  // numbers or operands
@@ -48,15 +48,26 @@ class ValidateFunction {
       } else if(multiParamFunctions.contains(token)){
         currentState.multiParam = true;
       } else if(!validFunctions.contains(token)) {
-        valid =  false;
+        invalidTokenIndex =  i;
       }
 
       if(currentState is ErrorState) {
-        valid = false;
+        invalidTokenIndex = i;
       }
     }
 
-    return valid;
+    int invalidIndex = _convertTokenIndex(invalidTokenIndex, inputString);
+
+    return invalidIndex;
+  }
+
+  int _convertTokenIndex(int tokenIndex, List<String> tokens){
+    int invalidIndex = tokenIndex;
+    if(tokenIndex > 0){
+      invalidIndex = List<int>.generate(tokenIndex, (i) => tokens[i].length).reduce((a, b) => a + b);
+    }
+
+    return invalidIndex;
   }
 
 }
