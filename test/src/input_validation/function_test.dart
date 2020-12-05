@@ -23,12 +23,12 @@ void main(){
 
       test('lone decimal point', () {
         var string = '3+.';
-        expect(tester.checkSyntax(string), 2);
+        expect(tester.checkSyntax(string), -1);
       });
 
       test('hanging decimal point', () {
         var string = '5−23.';
-        expect(tester.checkSyntax(string), 2);//TODO
+        expect(tester.checkSyntax(string), -1);
       });
 
       test('junk input', () {
