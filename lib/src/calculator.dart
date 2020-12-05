@@ -21,14 +21,14 @@ class Calculator{
   String calculate(String input){
     String resultString;
 
-    bool validInput = tester.testFunction(input);
+    int syntaxErrorLocation = tester.findSyntaxError(input);
     // convert display string to proper math format
-    if (validInput) {
+    if (syntaxErrorLocation == -1) {
       String expression = translator.translate(input);
       double results = calculateFunction(Utf8.toUtf8(expression));  // call to backend evaluator
       resultString = results.toString();
     } else {
-      throw new SyntaxException(0);
+      throw new SyntaxException(syntaxErrorLocation);
     }
     return resultString;
   }

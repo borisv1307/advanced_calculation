@@ -16,11 +16,7 @@ class ValidateFunction {
   static final List<String> operators = ['*','/','−','+','(',')','^',','];
 
   List<String> _sanitizeInput(String input){
-    String trimmed = input;
-    if(input.endsWith(',')){
-      trimmed = input.substring(input.length - 1); // remove the negative
-    }
-    List<String> sanitizedInput = parser.padTokens(trimmed).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
+    List<String> sanitizedInput = parser.padTokens(input).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
 
     return sanitizedInput;
   }
@@ -35,12 +31,12 @@ class ValidateFunction {
     return sanitizedToken;
   }
 
-  bool testFunction(String input) {
-    bool valid = true;
+  int findSyntaxError(String input) {
+    int invalidTokenIndex = -1;
     List<String> inputString = _sanitizeInput(input);
     State currentState = StartState(0, false);
 
-    for(int i=0;(i<inputString.length && valid);i++) {
+    for(int i=0;(i<inputString.length && invalidTokenIndex == -1);i++) {
       String token = _sanitizeToken(inputString[i]);
 
       if(operators.contains(token) || Pattern.validOperand.hasMatch(token)) {  // numbers or operands
@@ -48,15 +44,41 @@ class ValidateFunction {
       } else if(multiParamFunctions.contains(token)){
         currentState.multiParam = true;
       } else if(!validFunctions.contains(token)) {
-        valid =  false;
+        invalidTokenIndex =  i;
       }
 
       if(currentState is ErrorState) {
-        valid = false;
+        invalidTokenIndex = i;
       }
     }
 
-    return valid;
+    int invalidIndex = _convertTokenIndex(invalidTokenIndex, inputString);
+
+    return invalidIndex;
+  }
+
+  int _convertTokenIndex(int tokenIndex, List<String> tokens){
+    int invalidIndex = tokenIndex;
+    if(tokenIndex > 0){
+      invalidIndex = List<int>.generate(tokenIndex, (i) => tokens[i].length).reduce((a, b) => a + b);
+    }
+
+    if(tokenIndex > -1){
+      String token = tokens[tokenIndex];
+      invalidIndex += _analyzeToken(token);
+    }
+
+    return invalidIndex;
+  }
+
+  int _analyzeToken(String token){
+    int startIndex = token.startsWith('-') ? 1 : 0;
+    bool match = false;
+    int tokenMatch = token.length;
+    for(;tokenMatch>=0 && !match;tokenMatch--){
+      match = Pattern.validOperand.hasMatch(token.substring(startIndex,tokenMatch));
+    }
+    return tokenMatch + 1;
   }
 
 }
