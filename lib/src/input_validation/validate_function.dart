@@ -31,7 +31,7 @@ class ValidateFunction {
     return sanitizedToken;
   }
 
-  int checkSyntax(String input) {
+  int findSyntaxError(String input) {
     int invalidTokenIndex = -1;
     List<String> inputString = _sanitizeInput(input);
     State currentState = StartState(0, false);
@@ -63,7 +63,22 @@ class ValidateFunction {
       invalidIndex = List<int>.generate(tokenIndex, (i) => tokens[i].length).reduce((a, b) => a + b);
     }
 
+    if(tokenIndex > -1){
+      String token = tokens[tokenIndex];
+      invalidIndex += _analyzeToken(token);
+    }
+
     return invalidIndex;
+  }
+
+  int _analyzeToken(String token){
+    int startIndex = token.startsWith('-') ? 1 : 0;
+    bool match = false;
+    int tokenMatch = token.length;
+    for(;tokenMatch>=0 && !match;tokenMatch--){
+      match = Pattern.validOperand.hasMatch(token.substring(startIndex,tokenMatch));
+    }
+    return tokenMatch + 1;
   }
 
 }

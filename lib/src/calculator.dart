@@ -21,7 +21,7 @@ class Calculator{
   String calculate(String input){
     String resultString;
 
-    int syntaxErrorLocation = tester.checkSyntax(input);
+    int syntaxErrorLocation = tester.findSyntaxError(input);
     // convert display string to proper math format
     if (syntaxErrorLocation == -1) {
       String expression = translator.translate(input);
