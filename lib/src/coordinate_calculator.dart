@@ -7,8 +7,9 @@ class CoordinateCalculator {
   Translator translator;
 
   CoordinateCalculator({LibraryLoader loader, Translator translator}) {
-    calculateFunction = (loader ?? getLibraryLoader()).loadGraphCalculateFunction();
-    translator = translator ?? Translator();
+    this.calculateFunction = (loader ?? getLibraryLoader()).loadGraphCalculateFunction();
+    this.translator = translator ?? Translator();
+    print("");
   }
 
   LibraryLoader getLibraryLoader(){
