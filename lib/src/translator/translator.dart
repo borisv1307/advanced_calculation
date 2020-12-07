@@ -9,9 +9,10 @@ class Translator {
     String translated;
     if (input == null) return input;
     translated = _handleNegatives(input);
+    translated = _convertSymbols(translated);
     translated = _addImpliedMultiply(translated);
     translated = parser.padTokens(translated);
-    translated = _convertSymbols(translated);
+    translated = _handleX(translated);
     translated = _addClosingParentheses(translated);
     return translated.trim();
   }
@@ -24,6 +25,11 @@ class Translator {
     result = result.replaceAll("−", "-");
 
     return result;
+  }
+
+  // must occur after adding implied multiply
+  String _handleX(String input){ 
+    return input.replaceAll("𝑥", "x");
   }
 
   // append missing closing parentheses
@@ -44,10 +50,13 @@ class Translator {
       result = result.replaceAllMapped(TranslatePattern.numberX, (Match m) {
         return "${m.group(1)} * ${m.group(2)}";
       });
+      result = result.replaceAllMapped(TranslatePattern.xNumber, (Match m) {
+        return "${m.group(1)} * ${m.group(2)}";
+      });
       result = result.replaceAllMapped(TranslatePattern.numberParen, (Match m) {
         return "${m.group(1)} * ${m.group(2)}";
       });
-      result = result.replaceAllMapped(TranslatePattern.numberConst, (Match m) {
+      result = result.replaceAllMapped(TranslatePattern.xAdj, (Match m) {
         return "${m.group(1)} * ${m.group(2)}";
       });
     }
@@ -61,7 +70,7 @@ class Translator {
   // translate matrix expression such as 'Matrix1+Matrix2'
   String translateMatrixExpr(String input) {
     String translated;
-    translated = input. replaceAll("+", " + ");
+    translated = input.replaceAll("+", " + ");
     translated = translated.replaceAll("−", " − ");
     translated = translated.replaceAll("*", " * ");
     translated = translated.replaceAll("/", " / ");

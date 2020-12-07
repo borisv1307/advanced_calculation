@@ -1,14 +1,15 @@
 import 'dart:ffi';
-
 import 'package:advanced_calculation/src/coordinate_calculator.dart';
 import 'package:advanced_calculation/src/library_loader.dart';
+import 'package:advanced_calculation/src/translator/translator.dart';
 import 'package:ffi/ffi.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 class TestableCoordinateCalculator extends CoordinateCalculator{
   LibraryLoader loader;
-  TestableCoordinateCalculator(this.loader);
+  Translator translator;
+  TestableCoordinateCalculator(this.loader, this.translator);
 
   @override
   LibraryLoader getLibraryLoader(){
@@ -17,14 +18,17 @@ class TestableCoordinateCalculator extends CoordinateCalculator{
 }
 
 class MockLibraryLoader extends Mock implements LibraryLoader{}
+class MockTranslator extends Mock implements Translator{}
 
 void main() {
   group('Creates coordinate calculator',(){
     MockLibraryLoader loader;
+    MockTranslator translator;
     TestableCoordinateCalculator calculator;
     setUpAll((){
       loader = MockLibraryLoader();
-      calculator = TestableCoordinateCalculator(loader);
+      translator = MockTranslator();
+      calculator = TestableCoordinateCalculator(loader, translator);
     });
 
     test('is created',(){
@@ -48,13 +52,15 @@ void main() {
 
     setUpAll((){
       MockLibraryLoader loader = MockLibraryLoader();
+      MockTranslator translator = MockTranslator();
       when(loader.loadGraphCalculateFunction()).thenReturn(calculate);
-      TestableCoordinateCalculator calculator = TestableCoordinateCalculator(loader);
+      when(translator.translate("2x")).thenReturn("2 * x");
+      TestableCoordinateCalculator calculator = TestableCoordinateCalculator(loader, translator);
       actualOutput = calculator.calculate('2x',6);
     });
 
-    test('equation is utilized',(){
-      expect(Utf8.fromUtf8(actualEquation),'2x');
+    test('equation is translated',(){
+      expect(Utf8.fromUtf8(actualEquation),'2 * x');
     });
 
     test('x value is utilized',(){

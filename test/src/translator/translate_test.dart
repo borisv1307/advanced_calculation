@@ -83,6 +83,23 @@ void main() {
         expect(translator.translate('3 + -4*(-2 * -5)'), '3 + -1 * 4 * ( -1 * 2 * -1 * 5 )');
       });
     });
+    group('correctly replaces symbols:', () {
+      test('^2', () {
+        expect(translator.translate('3²'), '3 ^ 2');
+      });
+      test('^-1', () {
+        expect(translator.translate('2⁻¹'), '2 ^ -1');
+      });
+      test('x', () {
+        expect(translator.translate('𝑥'), 'x');
+      });
+      test('sqrt', () {
+        expect(translator.translate('√'), 'sqrt');
+      });
+      test('sqrt as function', () {
+        expect(translator.translate('3√(4)'), '3 * sqrt ( 4 )');
+      });
+    });
     group('correctly parses matrix expression', () {
       test('2x2', () {
         expect(translator.translateMatrixExpr('&1,2!3,4+&5,6!7,8'), '&1,2!3,4 + &5,6!7,8');
@@ -100,14 +117,38 @@ void main() {
       });
     });
     group('add implied * sign:', () {
-      test('expression 1', () {
-        expect(translator.translate('2 + 3sin(4 + 4)'), '2 + 3 * sin ( 4 + 4 )');
+      test('number * constant', () {
+        expect(translator.translate('3𝜋'), '3 * 𝜋');
       });
-      test('expression 2', () {
-        expect(translator.translate('4 + 3(9) − 2(4 + 3)'), '4 + 3 * ( 9 ) - 2 * ( 4 + 3 )');
+      test('x as constant', () {
+        expect(translator.translate('3𝑥'), '3 * x');
       });
-      test('number times constant', () {
+      test('number * function', () {
+        expect(translator.translate('3log(10)'), '3 * log ( 10 )');
+      });
+      test('constant * number', () {
+        expect(translator.translate('𝜋3'), '𝜋 * 3');
+      });
+      test('two constants', () {
+        expect(translator.translate('𝜋𝑥'), '𝜋 * x');
+      });
+      test('constant * function', () {
+        expect(translator.translate('𝑥sin(𝑥)'), 'x * sin ( x )');
+      });
+      test('number * parentheses', () {
+        expect(translator.translate('4(3)'), '4 * ( 3 )');
+      });
+      test('constant * parentheses', () {
+        expect(translator.translate('𝑒(5)'), '𝑒 * ( 5 )');
+      });
+      test('number * 2 constants', () {
         expect(translator.translate('4𝜋𝑒'), '4 * 𝜋 * 𝑒');
+      });
+      test('multiple constants', () {
+        expect(translator.translate('3𝜋𝜋𝜋'), '3 * 𝜋 * 𝜋 * 𝜋');
+      });
+      test('preserve sign, decimal', () {
+        expect(translator.translate('-3.41sin(10)'), '-1 * 3.41 * sin ( 10 )');
       });
     });
   });

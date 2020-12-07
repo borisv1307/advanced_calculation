@@ -11,6 +11,7 @@ class ExpressionParser{
       result = result.replaceAll("(", " ( ");
       result = result.replaceAll(")", " ) ");
       result = result.replaceAll(",", " , ");
+      result = result.replaceAll("𝑥", " 𝑥 ");
       result = result.replaceAll(TranslatePattern.spacing, " ");
       return result;
   }
