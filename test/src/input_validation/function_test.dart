@@ -199,6 +199,11 @@ void main(){
         expect(tester.findSyntaxError(string), -1);
       });
 
+      test('double negative int', () {
+        var string = '--30';
+        expect(tester.findSyntaxError(string), -1);
+      });
+
       test('positive decimal', () {
         var string = '45.31';
         expect(tester.findSyntaxError(string), -1);
@@ -253,6 +258,16 @@ void main(){
 
       test('squared', () {
         var string = '2²';
+        expect(tester.findSyntaxError(string), -1);
+      });
+
+      test('squared without number', () {
+        var string = '²';
+        expect(tester.findSyntaxError(string), 0);
+      });
+
+      test('squared trailing number', () {
+        var string = '2²2';
         expect(tester.findSyntaxError(string), -1);
       });
 
