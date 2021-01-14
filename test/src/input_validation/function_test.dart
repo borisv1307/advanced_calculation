@@ -180,6 +180,11 @@ void main(){
         var string = '2𝜋';
         expect(tester.findSyntaxError(string), -1);
       });
+
+      test('trailing symbol',(){
+        var string = '𝜋2';
+        expect(tester.findSyntaxError(string), -1);
+      });
     });
 
 

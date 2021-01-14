@@ -12,7 +12,7 @@ class ValidateFunction {
     "asin", "acos", "atan", "acsc", "asec", "acot", "csch", "sech", "coth", "ceil","asinh", "acosh", "atanh", "acsch", "asech",
     "acoth", "floor", "round", "trunc", "fract", "√", '-'];
   static final List<String> multiParamFunctions = ["max", "min", "gcd", "lcm"];
-  static final List<String> operators = ['*','/','−','+','(',')','^',','];
+  static final List<String> operators = ['*','/','−','+','(',')','^',',','²','⁻¹'];
 
   List<String> _sanitizeInput(String input){
     List<String> sanitizedInput = parser.padTokens(input).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();

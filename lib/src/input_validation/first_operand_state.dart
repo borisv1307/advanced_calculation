@@ -13,11 +13,13 @@ class FirstOperandState extends State {
   State getNextState(String value){
     State state = ErrorState(this.counter, this.multiParam);
 
-    if(Pattern.validBasicOperator.hasMatch(value)){
+    if(Pattern.validBasicOperator.hasMatch(value) ||
+        (value == "," && this.multiParam)){
       state = new OperatorState(this.counter, this.multiParam);
     }
-    else if(value == "," && this.multiParam){
-      state = new OperatorState(this.counter, this.multiParam);
+    else if(Pattern.validOperand.hasMatch(value) ||
+        Pattern.validPower.hasMatch(value)){
+      state = new FirstOperandState(this.counter, this.multiParam);
     }
     else if(value == ")"){
       state = new CloseSubExpressionState(this.counter - 1, this.multiParam);
