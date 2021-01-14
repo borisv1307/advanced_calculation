@@ -65,6 +65,11 @@ void main(){
         var string = 'tan(2+sin(2),(3*4)*cos(2))';
         expect(tester.findSyntaxError(string), 12);
       });
+
+      test('adding power', () {
+        var string = '2+²';
+        expect(tester.findSyntaxError(string), 2);
+      });
     });
     
     group('no operands next to one another', () {
