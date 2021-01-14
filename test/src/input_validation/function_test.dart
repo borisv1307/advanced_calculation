@@ -159,6 +159,11 @@ void main(){
         var string = 'max(4,2))';
         expect(tester.findSyntaxError(string), 8);
       });
+
+      test('open without close no content', () {
+        var string = '2(';
+        expect(tester.findSyntaxError(string), 1);
+      });
     });
   });
 

@@ -1,4 +1,5 @@
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
+import 'package:advanced_calculation/src/input_validation/open_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/parse/expression_parser.dart';
 import 'package:advanced_calculation/src/translator/translate_pattern.dart';
@@ -50,6 +51,10 @@ class ValidateFunction {
       if(currentState is ErrorState) {
         invalidTokenIndex = i;
       }
+    }
+
+    if(currentState is OpenSubExpressionState){
+      invalidTokenIndex = inputString.length - 1;
     }
 
     int invalidIndex = _convertTokenIndex(invalidTokenIndex, inputString);
