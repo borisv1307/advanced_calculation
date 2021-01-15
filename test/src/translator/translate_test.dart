@@ -153,6 +153,9 @@ void main() {
       test('number after squared', () {
         expect(translator.translate('2²2'), '2 ^ 2 * 2');
       });
+      test('number after -1', () {
+        expect(translator.translate('2⁻¹2'), '2 ^ -1 * 2');
+      });
     });
   });
 }

@@ -12,5 +12,5 @@ class TranslatePattern {
   static final RegExp xNumber = new RegExp(r'([𝜋𝑒𝑥])([0-9]+)', unicode: true);        // x3, 𝜋3
   static final RegExp xAdj = new RegExp(r'([𝜋𝑒𝑥])([𝜋𝑒𝑥]|[a-z]+)', unicode: true);     // xsin, 𝜋x
   static final RegExp numberParen = new RegExp(r'([0-9]+|[𝜋𝑒𝑥])(\()', unicode: true); // 3(, x(
-  static final RegExp powerX = new RegExp(r'([²])([0-9])');
+  static final RegExp powerX = new RegExp(r'(²|⁻¹)([0-9])');
 }
