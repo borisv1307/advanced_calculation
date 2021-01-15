@@ -1,4 +1,6 @@
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
+import 'package:advanced_calculation/src/input_validation/input_tokens.dart';
+import 'package:advanced_calculation/src/input_validation/open_subexpression_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/parse/expression_parser.dart';
 import 'package:advanced_calculation/src/translator/translate_pattern.dart';
@@ -7,12 +9,6 @@ import 'state.dart';
 
 class ValidateFunction {
   ExpressionParser parser = ExpressionParser();
-
-  static final List<String> validFunctions = ["ln","log","sin","cos","tan", "abs", "csc","sec", "cot", "sqrt", "sinh", "cosh", "tanh",
-    "asin", "acos", "atan", "acsc", "asec", "acot", "csch", "sech", "coth", "ceil","asinh", "acosh", "atanh", "acsch", "asech",
-    "acoth", "floor", "round", "trunc", "fract", "√", '-'];
-  static final List<String> multiParamFunctions = ["max", "min", "gcd", "lcm"];
-  static final List<String> operators = ['*','/','−','+','(',')','^',','];
 
   List<String> _sanitizeInput(String input){
     List<String> sanitizedInput = parser.padTokens(input).split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
@@ -23,8 +19,8 @@ class ValidateFunction {
   String sanitizeToken(String token){
     String sanitizedToken = token;
     //handle special negatives for complex functions
-    if(sanitizedToken.startsWith('-') && sanitizedToken.length > 1) {
-      sanitizedToken = sanitizedToken.substring(1); // remove the negative
+    while(sanitizedToken.startsWith('-') && sanitizedToken.length > 1) {
+      sanitizedToken = sanitizedToken.substring(1); // remove the negatives
     }
 
     return sanitizedToken;
@@ -38,18 +34,24 @@ class ValidateFunction {
     for(int i=0;(i<inputString.length && invalidTokenIndex == -1);i++) {
       String token = sanitizeToken(inputString[i]);
 
-      if (operators.contains(token) ||
+      if (InputTokens.operators.contains(token) ||
           Pattern.validOperand.hasMatch(token)) { // numbers or operands
         currentState = currentState.getNextState(token);
-      } else if (multiParamFunctions.contains(token)) {
+      } else if (InputTokens.multiParamFunctions.contains(token)) {
         currentState.multiParam = true;
-      } else if(!validFunctions.contains(token)) {
+      } else if(!InputTokens.validFunctions.any((function) => token.endsWith(function))) {
         invalidTokenIndex =  i;
       }
 
       if(currentState is ErrorState) {
         invalidTokenIndex = i;
       }
+    }
+
+    if(currentState is OpenSubExpressionState){
+      invalidTokenIndex = inputString.length - 1;
+    }else if(currentState is StartState){
+      invalidTokenIndex = 0;
     }
 
     int invalidIndex = _convertTokenIndex(invalidTokenIndex, inputString);
@@ -63,7 +65,7 @@ class ValidateFunction {
       invalidIndex = List<int>.generate(tokenIndex, (i) => tokens[i].length).reduce((a, b) => a + b);
     }
 
-    if(tokenIndex > -1){
+    if(tokenIndex > -1 && tokens.isNotEmpty){
       String token = tokens[tokenIndex];
       invalidIndex += _analyzeToken(token);
     }

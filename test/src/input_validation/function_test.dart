@@ -65,6 +65,26 @@ void main(){
         var string = 'tan(2+sin(2),(3*4)*cos(2))';
         expect(tester.findSyntaxError(string), 12);
       });
+
+      test('adding power', () {
+        var string = '2+²';
+        expect(tester.findSyntaxError(string), 2);
+      });
+
+      test('negative nothing', () {
+        var string = '-';
+        expect(tester.findSyntaxError(string), 1);
+      });
+
+      test('empty', () {
+        var string = '';
+        expect(tester.findSyntaxError(string), 0);
+      });
+
+      test('blank', () {
+        var string = ' ';
+        expect(tester.findSyntaxError(string), 0);
+      });
     });
     
     group('no operands next to one another', () {
@@ -154,6 +174,11 @@ void main(){
         var string = 'max(4,2))';
         expect(tester.findSyntaxError(string), 8);
       });
+
+      test('open without close no content', () {
+        var string = '2(';
+        expect(tester.findSyntaxError(string), 1);
+      });
     });
   });
 
@@ -180,6 +205,11 @@ void main(){
         var string = '2𝜋';
         expect(tester.findSyntaxError(string), -1);
       });
+
+      test('trailing symbol',(){
+        var string = '𝜋2';
+        expect(tester.findSyntaxError(string), -1);
+      });
     });
 
 
@@ -191,6 +221,11 @@ void main(){
 
       test('negative int', () {
         var string = '-30';
+        expect(tester.findSyntaxError(string), -1);
+      });
+
+      test('double negative int', () {
+        var string = '--30';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -251,6 +286,16 @@ void main(){
         expect(tester.findSyntaxError(string), -1);
       });
 
+      test('squared without number', () {
+        var string = '²';
+        expect(tester.findSyntaxError(string), 0);
+      });
+
+      test('squared trailing number', () {
+        var string = '2²2';
+        expect(tester.findSyntaxError(string), -1);
+      });
+
       test('inverse', () {
         var string = '3⁻¹';
         expect(tester.findSyntaxError(string), -1);
@@ -258,6 +303,11 @@ void main(){
     });
 
     group('valid functions:', () {
+      test('multiplied function', () {
+        var string = '3ln(45)';
+        expect(tester.findSyntaxError(string), -1);
+      });
+
       test('log', () {
         var string = 'log(111)';
         expect(tester.findSyntaxError(string), -1);
