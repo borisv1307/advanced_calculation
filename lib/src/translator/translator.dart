@@ -4,7 +4,7 @@ import 'package:advanced_calculation/src/translator/translate_pattern.dart';
 class Translator {
   ExpressionParser parser = ExpressionParser();
   List<RegExp> impliedMultiplyPatterns = [TranslatePattern.numberX, TranslatePattern.xNumber,
-    TranslatePattern.numberParen, TranslatePattern.xAdj, TranslatePattern.powerX];
+    TranslatePattern.numberParen, TranslatePattern.xAdj, TranslatePattern.powerNumber, TranslatePattern.parenNumber];
 
 // translates display values of a calculator expressions into proper format for processing
   String translate(String input) {
