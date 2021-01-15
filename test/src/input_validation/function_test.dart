@@ -70,6 +70,21 @@ void main(){
         var string = '2+²';
         expect(tester.findSyntaxError(string), 2);
       });
+
+      test('negative nothing', () {
+        var string = '-';
+        expect(tester.findSyntaxError(string), 1);
+      });
+
+      test('empty', () {
+        var string = '';
+        expect(tester.findSyntaxError(string), 0);
+      });
+
+      test('blank', () {
+        var string = ' ';
+        expect(tester.findSyntaxError(string), 0);
+      });
     });
     
     group('no operands next to one another', () {
@@ -288,6 +303,11 @@ void main(){
     });
 
     group('valid functions:', () {
+      test('multiplied function', () {
+        var string = '3ln(45)';
+        expect(tester.findSyntaxError(string), -1);
+      });
+
       test('log', () {
         var string = 'log(111)';
         expect(tester.findSyntaxError(string), -1);
