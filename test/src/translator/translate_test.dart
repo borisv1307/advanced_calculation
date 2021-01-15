@@ -150,6 +150,9 @@ void main() {
       test('preserve sign, decimal', () {
         expect(translator.translate('-3.41sin(10)'), '-1 * 3.41 * sin ( 10 )');
       });
+      test('number after squared', () {
+        expect(translator.translate('2²2'), '2 ^ 2 * 2');
+      });
     });
   });
 }

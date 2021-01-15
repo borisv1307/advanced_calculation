@@ -3,14 +3,16 @@ import 'package:advanced_calculation/src/translator/translate_pattern.dart';
 
 class Translator {
   ExpressionParser parser = ExpressionParser();
+  List<RegExp> impliedMultiplyPatterns = [TranslatePattern.numberX, TranslatePattern.xNumber,
+    TranslatePattern.numberParen, TranslatePattern.xAdj, TranslatePattern.powerX];
 
 // translates display values of a calculator expressions into proper format for processing
   String translate(String input) {
     String translated;
     if (input == null) return input;
     translated = _handleNegatives(input);
-    translated = _convertSymbols(translated);
     translated = _addImpliedMultiply(translated);
+    translated = _convertSymbols(translated);
     translated = parser.padTokens(translated);
     translated = _handleX(translated);
     translated = _addClosingParentheses(translated);
@@ -47,17 +49,10 @@ class Translator {
   String _addImpliedMultiply(String input) {
     String result = input;
     for (var i = 0; i < 2; i++) {  // runs twice for overlapping matches
-      result = result.replaceAllMapped(TranslatePattern.numberX, (Match m) {
-        return "${m.group(1)} * ${m.group(2)}";
-      });
-      result = result.replaceAllMapped(TranslatePattern.xNumber, (Match m) {
-        return "${m.group(1)} * ${m.group(2)}";
-      });
-      result = result.replaceAllMapped(TranslatePattern.numberParen, (Match m) {
-        return "${m.group(1)} * ${m.group(2)}";
-      });
-      result = result.replaceAllMapped(TranslatePattern.xAdj, (Match m) {
-        return "${m.group(1)} * ${m.group(2)}";
+      impliedMultiplyPatterns.forEach((pattern) {
+        result = result.replaceAllMapped(pattern, (Match m) {
+          return "${m.group(1)} * ${m.group(2)}";
+        });
       });
     }
     return result;
