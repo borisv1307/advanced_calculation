@@ -14,7 +14,7 @@ void main() {
         expect(translator.translate('2 + 2'), '2 + 2');
       });
       test('minus - with spacing', () {
-        expect(translator.translate('2 − 2'), '2 - 2');
+        expect(translator.translate('2 - 2'), '2 - 2');
       });
       test('multiply - no spacing', () {
         expect(translator.translate('2*2'), '2 * 2');
@@ -62,7 +62,7 @@ void main() {
         expect(translator.translate('asin(4.1)+cosh(2)'), 'asin ( 4.1 ) + cosh ( 2 )');
       });
       test('length-5 functions', () {
-        expect(translator.translate('acosh(-9)+ atanh(3)'), 'acosh ( -1 * 9 ) + atanh ( 3 )');
+        expect(translator.translate('acosh(`9)+ atanh(3)'), 'acosh ( `1 * 9 ) + atanh ( 3 )');
       });
       test('x²', () {
         expect(translator.translate('4.0²'), '4.0 ^ 2');
@@ -71,16 +71,16 @@ void main() {
         expect(translator.translate('√(4.0)'), 'sqrt ( 4.0 )');
       });
       test('x⁻¹', () {
-        expect(translator.translate('3⁻¹'), '3 ^ -1');
+        expect(translator.translate('3⁻¹'), '3 ^ `1');
       });
       test('preserve pi (𝜋)', () {
-        expect(translator.translate('𝜋sin(4)+3𝜋 − 𝜋(4)'), '𝜋 * sin ( 4 ) + 3 * 𝜋 - 𝜋 * ( 4 )');
+        expect(translator.translate('𝜋sin(4)+3𝜋 - 𝜋(4)'), '𝜋 * sin ( 4 ) + 3 * 𝜋 - 𝜋 * ( 4 )');
       });
       test('preserve e (𝑒)', () {
-        expect(translator.translate('𝑒sin(4)+3𝑒 − 𝑒(4)'), '𝑒 * sin ( 4 ) + 3 * 𝑒 - 𝑒 * ( 4 )');
+        expect(translator.translate('𝑒sin(4)+3𝑒 - 𝑒(4)'), '𝑒 * sin ( 4 ) + 3 * 𝑒 - 𝑒 * ( 4 )');
       });
       test('preserve negatives', () {
-        expect(translator.translate('3 + -4*(-2 * -5)'), '3 + -1 * 4 * ( -1 * 2 * -1 * 5 )');
+        expect(translator.translate('3 + `4*(`2 * `5)'), '3 + `1 * 4 * ( `1 * 2 * `1 * 5 )');
       });
     });
     group('correctly replaces symbols:', () {
@@ -88,7 +88,7 @@ void main() {
         expect(translator.translate('3²'), '3 ^ 2');
       });
       test('^-1', () {
-        expect(translator.translate('2⁻¹'), '2 ^ -1');
+        expect(translator.translate('2⁻¹'), '2 ^ `1');
       });
       test('x', () {
         expect(translator.translate('𝑥'), 'x');
@@ -105,7 +105,7 @@ void main() {
         expect(translator.translateMatrixExpr('&1,2!3,4+&5,6!7,8'), '&1,2!3,4 + &5,6!7,8');
       });
       test('3x3', () {
-        expect(translator.translateMatrixExpr('&1,2,3!4,5,6!7,8,9−&1,2,3!4,5,6!7,8,9'), '&1,2,3!4,5,6!7,8,9 − &1,2,3!4,5,6!7,8,9');
+        expect(translator.translateMatrixExpr('&1,2,3!4,5,6!7,8,9-&1,2,3!4,5,6!7,8,9'), '&1,2,3!4,5,6!7,8,9 - &1,2,3!4,5,6!7,8,9');
       });
     });
     group('unclosed parentheses:', () {
@@ -113,7 +113,7 @@ void main() {
         expect(translator.translate('sin(sin(sin(sin(3'), 'sin ( sin ( sin ( sin ( 3 ) ) ) )');
       });
       test('expression 2', () {
-        expect(translator.translate('(3 + sin(4 − 2 * (cos(50) / 2'), '( 3 + sin ( 4 - 2 * ( cos ( 50 ) / 2 ) ) )');
+        expect(translator.translate('(3 + sin(4 - 2 * (cos(50) / 2'), '( 3 + sin ( 4 - 2 * ( cos ( 50 ) / 2 ) ) )');
       });
     });
     group('add implied * sign:', () {
@@ -148,13 +148,13 @@ void main() {
         expect(translator.translate('3𝜋𝜋𝜋'), '3 * 𝜋 * 𝜋 * 𝜋');
       });
       test('preserve sign, decimal', () {
-        expect(translator.translate('-3.41sin(10)'), '-1 * 3.41 * sin ( 10 )');
+        expect(translator.translate('`3.41sin(10)'), '`1 * 3.41 * sin ( 10 )');
       });
       test('number after squared', () {
         expect(translator.translate('2²2'), '2 ^ 2 * 2');
       });
       test('number after -1', () {
-        expect(translator.translate('2⁻¹2'), '2 ^ -1 * 2');
+        expect(translator.translate('2⁻¹2'), '2 ^ `1 * 2');
       });
 
       test('number after paren', () {

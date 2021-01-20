@@ -22,9 +22,8 @@ class Translator {
   String _convertSymbols(String input){
     String result = input.replaceAll(" ²", " ^ 2 ");
     result = result.replaceAll("²", " ^ 2 ");
-    result = result.replaceAll("⁻¹", " ^ -1 ");
+    result = result.replaceAll("⁻¹", " ^ `1 ");
     result = result.replaceAll("√", "sqrt");
-    result = result.replaceAll("−", "-");
 
     return result;
   }
@@ -59,14 +58,14 @@ class Translator {
   }
 
   String _handleNegatives(String input) {
-    return input.replaceAll("-", " -1 * ");
+    return input.replaceAll("`", " `1 * ");
   }
 
   // translate matrix expression such as 'Matrix1+Matrix2'
   String translateMatrixExpr(String input) {
     String translated;
     translated = input.replaceAll("+", " + ");
-    translated = translated.replaceAll("−", " − ");
+    translated = translated.replaceAll("-", " - ");
     translated = translated.replaceAll("*", " * ");
     translated = translated.replaceAll("/", " / ");
     return translated;
