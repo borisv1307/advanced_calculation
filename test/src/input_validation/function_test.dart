@@ -17,7 +17,7 @@ void main(){
       });
 
       test('unexpected negative sign', () {
-        var string = '-345-45-2';
+        var string = '`345`45-2';
         expect(tester.findSyntaxError(string), 4);
       });
 
@@ -27,7 +27,7 @@ void main(){
       });
 
       test('hanging decimal point', () {
-        var string = '5−23.';
+        var string = '5-23.';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -72,7 +72,7 @@ void main(){
       });
 
       test('negative nothing', () {
-        var string = '-';
+        var string = '`';
         expect(tester.findSyntaxError(string), 1);
       });
 
@@ -104,7 +104,7 @@ void main(){
       });
 
       test('no subtraction adjacent', () {
-        var string = '2−−2';
+        var string = '2--2';
         expect(tester.findSyntaxError(string), 2);
       });
 
@@ -134,7 +134,7 @@ void main(){
       });
 
       test('no sub adj plus', () {
-        var string = '2−+2';
+        var string = '2-+2';
         expect(tester.findSyntaxError(string), 2);
       });
 
@@ -220,12 +220,12 @@ void main(){
       });
 
       test('negative int', () {
-        var string = '-30';
+        var string = '`30';
         expect(tester.findSyntaxError(string), -1);
       });
 
       test('double negative int', () {
-        var string = '--30';
+        var string = '``30';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -235,7 +235,7 @@ void main(){
       });
 
       test('negative decimal', () {
-        var string = '-345.432';
+        var string = '`345.432';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -245,12 +245,12 @@ void main(){
       });
 
       test('negative addition', () {
-        var string = '45+-3';
+        var string = '45+`3';
         expect(tester.findSyntaxError(string), -1);
       });
 
       test('negative decimal division', () {
-        var string = '-457.895/-34.5';
+        var string = '`457.895/`34.5';
         expect(tester.findSyntaxError(string), -1);
       });
     });
@@ -262,17 +262,17 @@ void main(){
       });
 
       test('-', () {
-        var string = '35−6523';
+        var string = '35-6523';
         expect(tester.findSyntaxError(string), -1);
       });
 
       test('/', () {
-        var string = '-32/2';
+        var string = '`32/2';
         expect(tester.findSyntaxError(string), -1);
       });
       
       test('*', () {
-        var string = '4555*-12';
+        var string = '4555*`12';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -324,7 +324,7 @@ void main(){
       });
 
       test('cos', () {
-        var string = 'cos(-87)';
+        var string = 'cos(`87)';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -334,7 +334,7 @@ void main(){
       });
 
       test('abs', () {
-        var string = 'abs(-12345)';
+        var string = 'abs(`12345)';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -349,7 +349,7 @@ void main(){
       });
 
       test('cot', () {
-        var string = 'cot(-3)';
+        var string = 'cot(`3)';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -359,7 +359,7 @@ void main(){
       });
 
       test('sinh', () {
-        var string = 'sinh(-1)';
+        var string = 'sinh(`1)';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -369,7 +369,7 @@ void main(){
       });
 
       test('tanh', () {
-        var string = 'tanh(-2)';
+        var string = 'tanh(`2)';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -384,7 +384,7 @@ void main(){
       });
 
       test('atan', () {
-        var string = 'atan(-30)';
+        var string = 'atan(`30)';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -414,7 +414,7 @@ void main(){
       });
 
       test('coth', () {
-        var string = 'coth(-50)';
+        var string = 'coth(`50)';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -434,7 +434,7 @@ void main(){
       });
 
       test('atanh', () {
-        var string = 'atanh(-10)';
+        var string = 'atanh(`10)';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -454,7 +454,7 @@ void main(){
       });
 
       test('floor', () {
-        var string = 'floor(-5.05)';
+        var string = 'floor(`5.05)';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -464,7 +464,7 @@ void main(){
       });
 
       test('trunc', () {
-        var string = 'trunc(-32.9012)';
+        var string = 'trunc(`32.9012)';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -481,7 +481,7 @@ void main(){
 
     group('parentheses expressions:', () {
       test('single operand inside parentheses', () {
-        var string = '(-30)';
+        var string = '(`30)';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -491,27 +491,27 @@ void main(){
       });
 
       test('multi parentheses', () {
-        var string = '5*(((-3)/4.5)+666)';
+        var string = '5*(((`3)/4.5)+666)';
         expect(tester.findSyntaxError(string), -1);
       });
 
       test('negative parentheses', () {
-        var string = '4+-(30*2)';
+        var string = '4+`(30*2)';
         expect(tester.findSyntaxError(string), -1);
       });
 
       test('basic negative parentheses', () {
-        var string = '-(3)';
+        var string = '`(3)';
         expect(tester.findSyntaxError(string), -1);
       });
 
       test('negative trig input', () {
-        var string = '-sin(3)';
+        var string = '`sin(3)';
         expect(tester.findSyntaxError(string), -1);
       });
 
       test('negative logarithmic input', () {
-        var string = '-ln(300)';
+        var string = '`ln(300)';
         expect(tester.findSyntaxError(string), -1);
       });
     });
@@ -523,12 +523,12 @@ void main(){
       });
 
       test('sin and valid parentheses', () {
-        var string = 'sin(2+(-4))-2';
+        var string = 'sin(2+(`4))-2';
         expect(tester.findSyntaxError(string), -1);
       });
 
       test('multi trig and  parentheses', () {
-        var string = 'sin(2+cos(-4))-2';
+        var string = 'sin(2+cos(`4))-2';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -543,7 +543,7 @@ void main(){
       });
 
       test('stacked functions', () {
-        var string = '-log(floor(sinh(cos(atan(log(-round(sin(-10.3456)))))^sqrt(100.2))/cos(-5)))';
+        var string = '`log(floor(sinh(cos(atan(log(`round(sin(`10.3456)))))^sqrt(100.2))/cos(`5)))';
         expect(tester.findSyntaxError(string), -1);
       });
 
@@ -558,7 +558,7 @@ void main(){
       });
 
       test('simple min function', () {
-        var string = 'min(-3,6)';
+        var string = 'min(`3,6)';
         expect(tester.findSyntaxError(string), -1);
       });
 
