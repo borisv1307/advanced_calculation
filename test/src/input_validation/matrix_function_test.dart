@@ -85,7 +85,7 @@ void main() {
       });
 
       test('- for 1x1 matrix', () {
-        var string = '&3−&6';
+        var string = '&3-&6';
         expect(tester.testMatrixFunction(string), equals(true));
       });
 
@@ -100,22 +100,22 @@ void main() {
       });
 
       test('+ for size greater than 1x1 matrix', () {
-        var string = '&1,2,3!6,-2,1+&4,5,6!4,7,0';
+        var string = '&1,2,3!6,`2,1+&4,5,6!4,7,0';
         expect(tester.testMatrixFunction(string), equals(true));
       });
 
       test('- size greater than for 1x1 matrix', () {
-        var string = '&1,2,3!7,8,-9−&4,5,6!0,0,0';
+        var string = '&1,2,3!7,8,`9-&4,5,6!0,0,0';
         expect(tester.testMatrixFunction(string), equals(true));
       });
 
       test('* for size greater than 1x1 matrix', () {
-        var string = '&1,2,3!4,5,6!-7,8,9*&4,5,6!7,8,9!0,1,2';
+        var string = '&1,2,3!4,5,6!`7,8,9*&4,5,6!7,8,9!0,1,2';
         expect(tester.testMatrixFunction(string), equals(true));
       });
 
       test('/ size greater than for 1x1 matrix', () {
-        var string = '&111,2,3!0,0,1/&4,5,6!1,2,3!0,-2,5';
+        var string = '&111,2,3!0,0,1/&4,5,6!1,2,3!0,`2,5';
         expect(tester.testMatrixFunction(string), equals(true));
       });
 

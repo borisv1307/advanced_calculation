@@ -19,7 +19,7 @@ class ValidateFunction {
   String sanitizeToken(String token){
     String sanitizedToken = token;
     //handle special negatives for complex functions
-    while(sanitizedToken.startsWith('-') && sanitizedToken.length > 1) {
+    while(sanitizedToken.startsWith('`') && sanitizedToken.length > 1) {
       sanitizedToken = sanitizedToken.substring(1); // remove the negatives
     }
 
@@ -74,7 +74,7 @@ class ValidateFunction {
   }
 
   int _analyzeToken(String token){
-    int startIndex = token.startsWith('-') ? 1 : 0;
+    int startIndex = token.startsWith('`') ? 1 : 0;
     bool match = false;
     int tokenMatch = token.length;
     for(;tokenMatch>=0 && !match;tokenMatch--){

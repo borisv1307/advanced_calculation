@@ -114,7 +114,7 @@ class ValidateMatrixFunction {
 
   List<String> _sanitizeMatrixInput(String input){
     input = input.replaceAll("+", " + ");
-    input = input.replaceAll("−", " − ");
+    input = input.replaceAll("-", " - ");
     input = input.replaceAll("*", " * ");
     input = input.replaceAll("/", " / ");
 
