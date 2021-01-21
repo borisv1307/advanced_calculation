@@ -41,7 +41,7 @@ class LibraryLoader{
       matrixFunction = library
           .lookup<NativeFunction<MatrixFunction>>("calculate_matr")
           .asFunction();
-    }on ArgumentError catch(e){
+    }on ArgumentError{
 
     }
 
