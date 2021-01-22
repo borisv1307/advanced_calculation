@@ -1,4 +1,4 @@
-import 'file:///C:/Users/Greg/IdeaProjects/se-calc/advanced_calculation/lib/calculation_options.dart';
+import 'package:advanced_calculation/calculation_options.dart';
 import 'package:test/test.dart';
 
 void main(){
