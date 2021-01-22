@@ -1,5 +1,6 @@
 
 import 'package:advanced_calculation/advanced_calculator.dart';
+import 'package:advanced_calculation/calculation_options.dart';
 import 'package:advanced_calculation/src/calculator.dart';
 import 'package:advanced_calculation/src/coordinate_calculator.dart';
 import 'package:advanced_calculation/src/matrix_calculator.dart';
@@ -54,11 +55,12 @@ void main() {
   });
 
   test('Calculator is utilized',(){
-    when(mockCalculator.calculate('1+1')).thenReturn('2');
+    CalculationOptions options = CalculationOptions();
+    when(mockCalculator.calculate('1+1', options)).thenReturn('2');
 
-    String output = advancedCalculator.calculate('1+1');
+    String output = advancedCalculator.calculate('1+1',options);
     expect(output, '2');
-    verify(mockCalculator.calculate('1+1')).called(1);
+    verify(mockCalculator.calculate('1+1',options)).called(1);
   });
 
   test('Matrix calculator is utilized',(){
@@ -68,5 +70,6 @@ void main() {
      expect(output, '&3,1!2,6');
      verify(mockMatrixCalculator.calculate('&1,2!3,4 + &2,-1!-1,2')).called(1);
   });
+
 
 }
