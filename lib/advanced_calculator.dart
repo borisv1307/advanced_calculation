@@ -21,6 +21,10 @@ class AdvancedCalculator {
     return _coordinateCalculator.calculate(equation, xValue);
   }
 
+  bool validateEquation(String equation){
+    return _coordinateCalculator.verify(equation);
+  }
+
   String calculate(String input, CalculationOptions options){
     return _calculator.calculate(input, options);
   }
