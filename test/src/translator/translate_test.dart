@@ -102,10 +102,10 @@ void main() {
     });
     group('correctly parses matrix expression', () {
       test('2x2', () {
-        expect(translator.translateMatrixExpr('&1,2!3,4+&5,6!7,8'), '&1,2!3,4 + &5,6!7,8');
+        expect(translator.translateMatrixExpr('&1;2!3;4!+&5;6!7;8!'), '&1;2!3;4! + &5;6!7;8!');
       });
       test('3x3', () {
-        expect(translator.translateMatrixExpr('&1,2,3!4,5,6!7,8,9-&1,2,3!4,5,6!7,8,9'), '&1,2,3!4,5,6!7,8,9 - &1,2,3!4,5,6!7,8,9');
+        expect(translator.translateMatrixExpr('&1;2;3!4;5;6!7;8;9!-&1;2;3!4;5;6!7;8;9!'), '&1;2;3!4;5;6!7;8;9! - &1;2;3!4;5;6!7;8;9!');
       });
     });
     group('unclosed parentheses:', () {
