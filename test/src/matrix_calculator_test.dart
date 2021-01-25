@@ -50,24 +50,24 @@ void main() {
       actualMatrix1 = matrix1;
       actualOperand = operand;
       actualMatrix2 = matrix2;
-      return Utf8.toUtf8('&2,3!4,5');
+      return Utf8.toUtf8('&2;3!4;5!');
     }
 
     setUpAll((){
       MockLibraryLoader loader = MockLibraryLoader();
       MockTranslator translator = MockTranslator();
-      when(translator.translate('&1,2!3,4+&1,1!1,1')).thenReturn('&1,2!3,4 + &1,1!1,1');
+      when(translator.translate('&1;2!3;4!+&1;1!1;1!')).thenReturn('&1;2!3;4! + &1;1!1;1!');
       when(loader.loadMatrixFunction()).thenReturn(calculate);
       TestableMatrixCalculator calculator = TestableMatrixCalculator(loader, translator);
-      actualOutput = calculator.calculate('&1,2!3,4+&1,1!1,1');
+      actualOutput = calculator.calculate('&1;2!3;4!+&1;1!1;1!');
     });
 
     test('matrix1 is translated',(){
-      expect('&1,2!3,4',Utf8.fromUtf8(actualMatrix1));
+      expect('&1;2!3;4!',Utf8.fromUtf8(actualMatrix1));
     });
 
     test('matrix2 is translated',(){
-      expect('&1,1!1,1',Utf8.fromUtf8(actualMatrix2));
+      expect('&1;1!1;1!',Utf8.fromUtf8(actualMatrix2));
     });
 
     test('operand is translated',(){
@@ -75,7 +75,7 @@ void main() {
     });
 
     test('output is received',(){
-      expect(actualOutput, '&2,3!4,5');
+      expect(actualOutput, '&2;3!4;5!');
     });
   });
 }

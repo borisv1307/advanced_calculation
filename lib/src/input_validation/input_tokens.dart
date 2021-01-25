@@ -5,4 +5,5 @@ class InputTokens{
   static final List<String> multiParamFunctions = ["max", "min", "gcd", "lcm"];
   static final List<String> operators = ['*','/','-','+','(',')','^',',','²','⁻¹'];
   static final List<String> symbols = ['𝜋', '𝑒', '𝑥'];
+  static final List<String> specialOperators = ['(',')','^','²','⁻¹'];
 }

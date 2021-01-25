@@ -1,3 +1,4 @@
+import 'package:advanced_calculation/src/input_validation/input_tokens.dart';
 import 'package:advanced_calculation/src/input_validation/validate_function.dart';
 import 'package:advanced_calculation/src/translator/translate_pattern.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
@@ -10,9 +11,9 @@ class ValidateMatrixFunction {
     List<String> input = _sanitizeMatrixInput(expression);
 
     if(input.length > 1) {
-      List<String> matrix1Values = input[0].replaceAll("&", "").split(RegExp(r'(!|,)'));
+      List<String> matrix1Values = input[0].replaceAll("&", "").split(RegExp(r'(!|;)')).where((item) => item.isNotEmpty).toList();
       String operator = input[1];
-      List<String> matrix2Values = input[2].replaceAll("&", "").split(RegExp(r'(!|,)'));
+      List<String> matrix2Values = input[2].replaceAll("&", "").split(RegExp(r'(!|;)')).where((item) => item.isNotEmpty).toList();
 
       if (validateOperator(operator) && validateSize(input) && checkValues(matrix1Values, matrix2Values))
         valid = true;
@@ -24,14 +25,30 @@ class ValidateMatrixFunction {
   bool checkValues(List<String> matrix1Values, List<String> matrix2Values){
     for(int i = 0; i < matrix1Values.length; i++){
       String token = validate.sanitizeToken(matrix1Values[i]);
-      if(!Pattern.validOperand.hasMatch(token))
-        return false;
+
+      if(isMathFunction(token)){
+        int syntaxErrorLocation = validate.findSyntaxError(token);
+        if(syntaxErrorLocation != -1)
+          return false;
+      }
+      else {
+        if (!Pattern.validOperand.hasMatch(token))
+          return false;
+      }
     }
 
     for(int i = 0; i < matrix2Values.length; i++) {
       String token = validate.sanitizeToken(matrix2Values[i]);
-      if (!Pattern.validOperand.hasMatch(token))
-        return false;
+
+      if(isMathFunction(token)){
+        int syntaxErrorLocation = validate.findSyntaxError(token);
+        if(syntaxErrorLocation != -1)
+          return false;
+      }
+      else {
+        if (!Pattern.validOperand.hasMatch(token))
+          return false;
+      }
     }
 
     return true;
@@ -61,21 +78,21 @@ class ValidateMatrixFunction {
   }
 
   bool isRowSameSize(String matrix1, String matrix2){
-    List<String> rowsMatrix1 = matrix1.split("!");
-    List<String> rowsMatrix2 = matrix2.split("!");
+    List<String> rowsMatrix1 = matrix1.split("!").where((item) => item.isNotEmpty).toList();
+    List<String> rowsMatrix2 = matrix2.split("!").where((item) => item.isNotEmpty).toList();
 
     return rowsMatrix1.length == rowsMatrix2.length;
   }
 
   bool isColumnSameSize(String matrix1, String matrix2){
-    List<String> rowsMatrix1 = matrix1.split("!");
-    List<String> rowsMatrix2 = matrix2.split("!");
+    List<String> rowsMatrix1 = matrix1.split("!").where((item) => item.isNotEmpty).toList();
+    List<String> rowsMatrix2 = matrix2.split("!").where((item) => item.isNotEmpty).toList();
     bool valid = false;
 
     //need to check if correct number of columns exist in a row for matrix
     if(isValidColumns(rowsMatrix1) && isValidColumns(rowsMatrix2)) {
-      List<String> colMatrix1 = rowsMatrix1[0].split(",");
-      List<String> colMatrix2 = rowsMatrix2[0].split(",");
+      List<String> colMatrix1 = rowsMatrix1[0].split(";");
+      List<String> colMatrix2 = rowsMatrix2[0].split(";");
 
       if (colMatrix1.length == colMatrix2.length)
         valid = true;
@@ -85,13 +102,13 @@ class ValidateMatrixFunction {
   }
 
   bool isRowColSameSize(String matrix1, String matrix2){
-    List<String> rowsMatrix2 = matrix2.split("!");
-    List<String> rowsMatrix1 = matrix1.split("!");
+    List<String> rowsMatrix2 = matrix2.split("!").where((item) => item.isNotEmpty).toList();
+    List<String> rowsMatrix1 = matrix1.split("!").where((item) => item.isNotEmpty).toList();
     bool valid = false;
 
     //need to check if correct number of columns exist in a row for matrix
     if(isValidColumns(rowsMatrix1) && isValidColumns(rowsMatrix2)) {
-      List<String> colMatrix1 = rowsMatrix1[0].split(",");
+      List<String> colMatrix1 = rowsMatrix1[0].split(";");
 
       if (rowsMatrix2.length == colMatrix1.length)
         valid = true;
@@ -101,10 +118,10 @@ class ValidateMatrixFunction {
   }
 
   bool isValidColumns(List<String> rowsMatrix){
-    int colSize = rowsMatrix[0].split(",").length;
+    int colSize = rowsMatrix[0].split(";").length;
 
     for (int i=0; i < rowsMatrix.length; i++) {
-      List<String> colMatrix = rowsMatrix[i].split(",");
+      List<String> colMatrix = rowsMatrix[i].split(";");
       if (colSize != colMatrix.length)
         return false;
     }
@@ -112,11 +129,22 @@ class ValidateMatrixFunction {
     return true;
   }
 
+  bool isMathFunction(String input){
+    bool checker = false;
+
+    if(InputTokens.specialOperators.any((element) => input.contains(element)) ||
+        InputTokens.validFunctions.any((element) => input.contains(element)) ||
+        InputTokens.multiParamFunctions.any((element) => input.contains(element)))
+      checker = true;
+
+    return checker;
+  }
+
   List<String> _sanitizeMatrixInput(String input){
-    input = input.replaceAll("+", " + ");
-    input = input.replaceAll("-", " - ");
-    input = input.replaceAll("*", " * ");
-    input = input.replaceAll("/", " / ");
+    input = input.replaceAll("!+&", "! + &");
+    input = input.replaceAll("!-&", "! - &");
+    input = input.replaceAll("!*&", "! * &");
+    input = input.replaceAll("!/&", "! / &");
 
     List<String> sanitizedInput = input.split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
 

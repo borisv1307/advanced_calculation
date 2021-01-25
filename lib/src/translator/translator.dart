@@ -64,10 +64,10 @@ class Translator {
   // translate matrix expression such as 'Matrix1+Matrix2'
   String translateMatrixExpr(String input) {
     String translated;
-    translated = input.replaceAll("+", " + ");
-    translated = translated.replaceAll("-", " - ");
-    translated = translated.replaceAll("*", " * ");
-    translated = translated.replaceAll("/", " / ");
+    translated = input.replaceAll("!+&", "! + &");
+    translated = translated.replaceAll("!-&", "! - &");
+    translated = translated.replaceAll("!*&", "! * &");
+    translated = translated.replaceAll("!/&", "! / &");
     return translated;
   }
 
