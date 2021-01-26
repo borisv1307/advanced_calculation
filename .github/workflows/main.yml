@@ -51,6 +51,7 @@ jobs:
           git config --global user.name 'C3PO'
           git config --global user.email 'c3po@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git add ./android/src/main/jniLibs/x86/libcalc.so
           git commit -am "Updated library"
           git push
 
