@@ -17,28 +17,29 @@ defaults:
 jobs:
   build-esoteric-nonsense:
     runs-on: ubuntu-latest
-    #checkout esoteric nonsense
-    - uses: actions/checkout@v2
-      with:
-        repository: SE-691-Graphing-Calculator/esoteric_nonsense.git
-        path: esoteric_nonsense
-        ref: main
-    - uses: nttld/setup-ndk@v1
-      id: setup-ndk
-      with:
-        ndk-version: r21d
-    - name: Install ndk
-      working-directory: ./esoteric_nonsense
-      run: cargo install cargo-ndk
-    - name: Set NDK path
-      working-directory: ./esoteric_nonsense
-      run: echo "ANDROID_NDK_HOME=${{steps.setup-ndk.outputs.ndk-path}}" >> $GITHUB_ENV
-    - name: Add targets
-      working-directory: ./esoteric_nonsense
-      run: rustup target add i686-linux-android
-    - name: Build
-      working-directory: ./esoteric_nonsense
-      run: cargo ndk --platform 21 --target x86 build --verbose
+    steps:
+      #checkout esoteric nonsense
+      - uses: actions/checkout@v2
+        with:
+          repository: SE-691-Graphing-Calculator/esoteric_nonsense.git
+          path: esoteric_nonsense
+          ref: main
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21d
+      - name: Install ndk
+        working-directory: ./esoteric_nonsense
+        run: cargo install cargo-ndk
+      - name: Set NDK path
+        working-directory: ./esoteric_nonsense
+        run: echo "ANDROID_NDK_HOME=${{steps.setup-ndk.outputs.ndk-path}}" >> $GITHUB_ENV
+      - name: Add targets
+        working-directory: ./esoteric_nonsense
+        run: rustup target add i686-linux-android
+      - name: Build
+        working-directory: ./esoteric_nonsense
+        run: cargo ndk --platform 21 --target x86 build --verbose
 
   # This workflow contains a single job called "build"
   build:
