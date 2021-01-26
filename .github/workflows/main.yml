@@ -39,7 +39,12 @@ jobs:
         run: rustup target add i686-linux-android
       - name: Build
         working-directory: ./esoteric_nonsense
-        run: cargo ndk --platform 21 --target x86 build --verbose
+        run: cargo ndk --platform 21 --target x86 build --release --verbose
+      - name: Upload library
+        uses: actions/upload-artifact@v2
+        with:
+          name: libcalc
+          path: ./esoteric_nonsense/target/i686-linux-android/release/libcalc.so
 
   # This workflow contains a single job called "build"
   build:
