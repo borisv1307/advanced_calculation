@@ -46,6 +46,13 @@ jobs:
         with:
           name: libcalc
           path: ./android/src/main/jniLibs/x86
+      - name: Update library
+        run: |
+          git config --global user.name 'C3PO'
+          git config --global user.email 'c3po@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Updated library"
+          git push
 
   build:
     needs: [update-esoteric-nonsense]
