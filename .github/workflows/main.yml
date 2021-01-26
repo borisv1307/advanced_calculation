@@ -45,13 +45,21 @@ jobs:
         with:
           name: libcalc
           path: ./esoteric_nonsense/target/i686-linux-android/release/libcalc.so
-
-  # This workflow contains a single job called "build"
-  build:
+  update-esoteric-nonsense:
     needs: [build-esoteric-nonsense]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download esoteric_nonsense
+        uses: actions/download-artifact@v2
+        with:
+          name: libcalc
+          path: ./android/src/main/jniLibs/x86
+
+  build:
+    needs: [update-esoteric-nonsense]
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Setup Java environment in order to build the Android app.
