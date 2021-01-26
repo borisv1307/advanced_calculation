@@ -29,9 +29,9 @@ jobs:
           path: esoteric_nonsense
           ref: main
       - uses: nttld/setup-ndk@v1
-          id: setup-ndk
-          with:
-            ndk-version: r21d
+        id: setup-ndk
+        with:
+          ndk-version: r21d
       - name: Install ndk
         run: cargo install cargo-ndk
       - name: Set NDK path
