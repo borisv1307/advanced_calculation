@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Branches
+name: Main
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the main branch
@@ -8,8 +8,6 @@ on:
   push:
     branches:
       - '*'
-  pull_request:
-    branches: [ main ]
 
 defaults:
   run:
@@ -24,6 +22,27 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      #checkout esoteric nonsense
+      - uses: actions/checkout@v2
+        with:
+          repository: SE-691-Graphing-Calculator/esoteric_nonsense.git
+          path: esoteric_nonsense
+          ref: main
+      - uses: nttld/setup-ndk@v1
+          id: setup-ndk
+          with:
+            ndk-version: r21d
+      - name: Install ndk
+        run: cargo install cargo-ndk
+      - name: Set NDK path
+        run: echo "ANDROID_NDK_HOME=${{steps.setup-ndk.outputs.ndk-path}}" >> $GITHUB_ENV
+      - name: Add targets
+        run: rustup target add i686-linux-android
+      - name: Build
+        working-directory: ./esoteric_nonsense
+        run: cargo ndk --platform 21 --target x86 build --verbose
+
+
       # Setup Java environment in order to build the Android app.
       - uses: actions/checkout@v2
         with:
