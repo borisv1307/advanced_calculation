@@ -15,6 +15,31 @@ defaults:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  build-esoteric-nonsense:
+    runs-on: ubuntu-latest
+    #checkout esoteric nonsense
+    - uses: actions/checkout@v2
+      with:
+        repository: SE-691-Graphing-Calculator/esoteric_nonsense.git
+        path: esoteric_nonsense
+        ref: main
+    - uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r21d
+    - name: Install ndk
+      working-directory: ./esoteric_nonsense
+      run: cargo install cargo-ndk
+    - name: Set NDK path
+      working-directory: ./esoteric_nonsense
+      run: echo "ANDROID_NDK_HOME=${{steps.setup-ndk.outputs.ndk-path}}" >> $GITHUB_ENV
+    - name: Add targets
+      working-directory: ./esoteric_nonsense
+      run: rustup target add i686-linux-android
+    - name: Build
+      working-directory: ./esoteric_nonsense
+      run: cargo ndk --platform 21 --target x86 build --verbose
+
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
@@ -22,28 +47,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      #checkout esoteric nonsense
-      - uses: actions/checkout@v2
-        with:
-          repository: SE-691-Graphing-Calculator/esoteric_nonsense.git
-          path: esoteric_nonsense
-          ref: main
-      - uses: nttld/setup-ndk@v1
-        id: setup-ndk
-        with:
-          ndk-version: r21d
-      - name: Install ndk
-        working-directory: ./esoteric_nonsense
-        run: cargo install cargo-ndk
-      - name: Set NDK path
-        run: echo "ANDROID_NDK_HOME=${{steps.setup-ndk.outputs.ndk-path}}" >> $GITHUB_ENV
-      - name: Add targets
-        run: rustup target add i686-linux-android
-      - name: Build
-        working-directory: ./esoteric_nonsense
-        run: cargo ndk --platform 21 --target x86 build --verbose
-
-
       # Setup Java environment in order to build the Android app.
       - uses: actions/checkout@v2
         with:
