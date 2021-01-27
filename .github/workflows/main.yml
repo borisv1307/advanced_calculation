@@ -38,6 +38,7 @@ jobs:
           path: ./target/i686-linux-android/release/libcalc.so
   update-esoteric-nonsense:
     needs: [build-esoteric-nonsense]
+    continue-on-error: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
