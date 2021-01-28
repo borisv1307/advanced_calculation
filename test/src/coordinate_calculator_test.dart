@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'package:advanced_calculation/calculation_options.dart';
 import 'package:advanced_calculation/src/coordinate_calculator.dart';
 import 'package:advanced_calculation/src/library_loader.dart';
 import 'package:advanced_calculation/src/translator/translator.dart';
@@ -54,7 +55,7 @@ void main() {
       MockLibraryLoader loader = MockLibraryLoader();
       MockTranslator translator = MockTranslator();
       when(loader.loadGraphCalculateFunction()).thenReturn(calculate);
-      when(translator.translate("2x")).thenReturn("2 * x");
+      when(translator.translate("2x",CalculationOptions())).thenReturn("2 * x");
       TestableCoordinateCalculator calculator = TestableCoordinateCalculator(loader, translator);
       actualOutput = calculator.calculate('2x',6);
     });

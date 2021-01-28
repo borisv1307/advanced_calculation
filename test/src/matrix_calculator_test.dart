@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'package:advanced_calculation/calculation_options.dart';
 import 'package:advanced_calculation/src/matrix_calculator.dart';
 import 'package:advanced_calculation/src/library_loader.dart';
 import 'package:advanced_calculation/src/translator/translator.dart';
@@ -56,7 +57,7 @@ void main() {
     setUpAll((){
       MockLibraryLoader loader = MockLibraryLoader();
       MockTranslator translator = MockTranslator();
-      when(translator.translate('&1;2!3;4!+&1;1!1;1!')).thenReturn('&1;2!3;4! + &1;1!1;1!');
+      when(translator.translate('&1;2!3;4!+&1;1!1;1!',CalculationOptions())).thenReturn('&1;2!3;4! + &1;1!1;1!');
       when(loader.loadMatrixFunction()).thenReturn(calculate);
       TestableMatrixCalculator calculator = TestableMatrixCalculator(loader, translator);
       actualOutput = calculator.calculate('&1;2!3;4!+&1;1!1;1!');

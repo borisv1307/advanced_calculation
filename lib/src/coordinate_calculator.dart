@@ -1,3 +1,4 @@
+import 'package:advanced_calculation/calculation_options.dart';
 import 'package:advanced_calculation/src/library_loader.dart';
 import 'package:advanced_calculation/src/translator/translator.dart';
 import 'package:advanced_calculation/src/input_validation/validate_function.dart';
@@ -27,7 +28,7 @@ class CoordinateCalculator {
   }
   
   double calculate(String equation, double xValue){
-    String translated = translator.translate(equation);
+    String translated = translator.translate(equation,CalculationOptions());
     return calculateFunction(Utf8.toUtf8(translated), xValue);
   }
 }
