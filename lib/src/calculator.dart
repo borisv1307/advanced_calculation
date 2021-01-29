@@ -28,7 +28,7 @@ class Calculator{
     int syntaxErrorLocation = tester.findSyntaxError(input);
     // convert display string to proper math format
     if (syntaxErrorLocation == -1) {
-      String expression = translator.translate(input);
+      String expression = translator.translate(input,options);
       double results = calculateFunction(Utf8.toUtf8(expression));  // call to backend evaluator
       resultString = transformer.transform(results, options.decimalPlaces);
     } else {

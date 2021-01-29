@@ -28,7 +28,7 @@ void main(){
     };
 
     when(loader.loadCalculateFunction()).thenReturn(calculateFunction);
-    when(translator.translate('test input')).thenReturn('test expression');
+    when(translator.translate('test input',options)).thenReturn('test expression');
     when(validator.findSyntaxError('test input')).thenReturn(-1);
     when(transformer.transform(5, -1)).thenReturn('completed');
 

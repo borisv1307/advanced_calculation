@@ -1,8 +1,6 @@
+import 'package:advanced_calculation/angular_unit.dart';
+
 class CalculationOptions{
-  int decimalPlaces;
-
-  CalculationOptions({int decimalPlaces = -1}):
-      this.decimalPlaces = decimalPlaces;
-
-
+  int decimalPlaces = -1;
+  AngularUnit angularUnit = AngularUnit.RADIAN;
 }
