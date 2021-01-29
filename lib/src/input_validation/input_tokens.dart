@@ -4,6 +4,6 @@ class InputTokens{
   static final List<String> operators = ['*','/','-','+','(',')','^',',','²','⁻¹'];
   static final List<String> symbols = ['𝜋', '𝑒', '𝑥'];
   static final List<String> specialOperators = ['(',')','^','²','⁻¹'];
-  static final List<String> trigFunctions = ["sin","cos","tan", "sec", "csc", "cot", "sinh", "cosh", "tanh", "sech", "csch", "coth"
+  static final List<String> trigFunctions = ["sin","cos","tan", "sec", "csc", "cot", "sinh", "cosh", "tanh", "sech", "csch", "coth",
     "asin", "acos", "atan", "asec", "acsc", "acot","acoth","asinh", "acosh", "atanh", "acsch", "asech"];
 }
