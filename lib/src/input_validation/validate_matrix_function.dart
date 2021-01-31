@@ -11,9 +11,9 @@ class ValidateMatrixFunction {
     List<String> input = _sanitizeMatrixInput(expression);
 
     if(input.length > 1) {
-      List<String> matrix1Values = input[0].replaceAll("&", "").split(RegExp(r'(!|;)')).where((item) => item.isNotEmpty).toList();
+      List<String> matrix1Values = input[0].replaceAll("&", "").split(RegExp(r'(@|;)')).where((item) => item.isNotEmpty).toList();
       String operator = input[1];
-      List<String> matrix2Values = input[2].replaceAll("&", "").split(RegExp(r'(!|;)')).where((item) => item.isNotEmpty).toList();
+      List<String> matrix2Values = input[2].replaceAll("&", "").split(RegExp(r'(@|;)')).where((item) => item.isNotEmpty).toList();
 
       if (validateOperator(operator) && validateSize(input) && checkValues(matrix1Values, matrix2Values))
         valid = true;
@@ -78,15 +78,15 @@ class ValidateMatrixFunction {
   }
 
   bool isRowSameSize(String matrix1, String matrix2){
-    List<String> rowsMatrix1 = matrix1.split("!").where((item) => item.isNotEmpty).toList();
-    List<String> rowsMatrix2 = matrix2.split("!").where((item) => item.isNotEmpty).toList();
+    List<String> rowsMatrix1 = matrix1.split("@").where((item) => item.isNotEmpty).toList();
+    List<String> rowsMatrix2 = matrix2.split("@").where((item) => item.isNotEmpty).toList();
 
     return rowsMatrix1.length == rowsMatrix2.length;
   }
 
   bool isColumnSameSize(String matrix1, String matrix2){
-    List<String> rowsMatrix1 = matrix1.split("!").where((item) => item.isNotEmpty).toList();
-    List<String> rowsMatrix2 = matrix2.split("!").where((item) => item.isNotEmpty).toList();
+    List<String> rowsMatrix1 = matrix1.split("@").where((item) => item.isNotEmpty).toList();
+    List<String> rowsMatrix2 = matrix2.split("@").where((item) => item.isNotEmpty).toList();
     bool valid = false;
 
     //need to check if correct number of columns exist in a row for matrix
@@ -102,8 +102,8 @@ class ValidateMatrixFunction {
   }
 
   bool isRowColSameSize(String matrix1, String matrix2){
-    List<String> rowsMatrix2 = matrix2.split("!").where((item) => item.isNotEmpty).toList();
-    List<String> rowsMatrix1 = matrix1.split("!").where((item) => item.isNotEmpty).toList();
+    List<String> rowsMatrix2 = matrix2.split("@").where((item) => item.isNotEmpty).toList();
+    List<String> rowsMatrix1 = matrix1.split("@").where((item) => item.isNotEmpty).toList();
     bool valid = false;
 
     //need to check if correct number of columns exist in a row for matrix
@@ -141,10 +141,12 @@ class ValidateMatrixFunction {
   }
 
   List<String> _sanitizeMatrixInput(String input){
-    input = input.replaceAll("!+&", "! + &");
-    input = input.replaceAll("!-&", "! - &");
-    input = input.replaceAll("!*&", "! * &");
-    input = input.replaceAll("!/&", "! / &");
+    // replace dollar sign for consistant validation check
+    input = input.replaceAll("\$+&", "@ + &");
+    input = input.replaceAll("\$-&", "@ - &");
+    input = input.replaceAll("\$*&", "@ * &");
+    input = input.replaceAll("\$/&", "@ / &");
+    input = input.replaceAll("\$", "@");
 
     List<String> sanitizedInput = input.split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
 
