@@ -1,3 +1,5 @@
+import 'package:advanced_calculation/angular_unit.dart';
+import 'package:advanced_calculation/calculation_options.dart';
 import 'package:advanced_calculation/src/parse/expression_parser.dart';
 import 'package:advanced_calculation/src/translator/translate_pattern.dart';
 
@@ -5,12 +7,14 @@ class Translator {
   ExpressionParser parser = ExpressionParser();
   List<RegExp> impliedMultiplyPatterns = [TranslatePattern.numberX, TranslatePattern.xNumber,
     TranslatePattern.numberParen, TranslatePattern.xAdj, TranslatePattern.powerNumber, TranslatePattern.parenNumber];
+  List<String> trigSuffixes = ['sin','cos','tan','sec','csc','cot','sinh','cosh','tanh','sech','csch','coth'];
 
 // translates display values of a calculator expressions into proper format for processing
-  String translate(String input) {
-    String translated;
-    if (input == null) return input;
-    translated = _handleNegatives(input);
+  String translate(String input, CalculationOptions options) {
+    String translated = input;
+    if (translated == null) return translated;
+    translated = _angularUnits(translated,options);
+    translated = _handleNegatives(translated);
     translated = _addImpliedMultiply(translated);
     translated = _convertSymbols(translated);
     translated = parser.padTokens(translated);
@@ -64,10 +68,19 @@ class Translator {
   // translate matrix expression such as 'Matrix1+Matrix2'
   String translateMatrixExpr(String input) {
     String translated;
-    translated = input.replaceAll("+", " + ");
-    translated = translated.replaceAll("-", " - ");
-    translated = translated.replaceAll("*", " * ");
-    translated = translated.replaceAll("/", " / ");
+    translated = input.replaceAll("\$+&", "\$ + &");
+    translated = translated.replaceAll("\$-&", "\$ - &");
+    translated = translated.replaceAll("\$*&", "\$ * &");
+    translated = translated.replaceAll("\$/&", "\$ / &");
+    return translated;
+  }
+
+  String _angularUnits(String input, CalculationOptions options) {
+    String translated = input;
+    if(options.angularUnit == AngularUnit.DEGREE){
+      trigSuffixes.forEach((trigFunction) =>
+        translated = translated.replaceAll(trigFunction + "(", trigFunction + "((𝜋/180)*"));
+    }
     return translated;
   }
 

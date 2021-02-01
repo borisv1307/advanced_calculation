@@ -1,0 +1,3 @@
+enum AngularUnit{
+  RADIAN, DEGREE
+}
