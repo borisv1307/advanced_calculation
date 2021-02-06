@@ -85,8 +85,8 @@ class Translator {
     List<String> matrix2Values = sanitizedInput[2].replaceAll(RegExp(r'&|\$'), "").split(RegExp(r'(@|;)')).where((item) => item.isNotEmpty).toList();
 
     // simplify matrix values and recreate it
-    String matrix1 = _evaluateMatrix(matrix1Size, matrix1Values);
-    String matrix2 = _evaluateMatrix(matrix2Size, matrix2Values);
+    String matrix1 = evaluateMatrix(matrix1Size, matrix1Values);
+    String matrix2 = evaluateMatrix(matrix2Size, matrix2Values);
 
     String translated = matrix1 + " " + operator +  " " + matrix2;
 
@@ -124,7 +124,7 @@ class Translator {
     return matrixSize;
   }
 
-  String _evaluateMatrix(matrixSize, matrixValues){
+  String evaluateMatrix(matrixSize, matrixValues){
     String matrix = "&";
     int count = 0;
 
