@@ -1,9 +1,16 @@
 import 'package:advanced_calculation/angular_unit.dart';
 import 'package:advanced_calculation/calculation_options.dart';
+import 'package:advanced_calculation/src/input_validation/validate_matrix_function.dart';
+import 'package:advanced_calculation/src/library_loader.dart';
 import 'package:advanced_calculation/src/parse/expression_parser.dart';
+import 'package:advanced_calculation/src/transform/mantissa_transformer.dart';
 import 'package:advanced_calculation/src/translator/translate_pattern.dart';
+import 'package:ffi/ffi.dart';
 
 class Translator {
+  ValidateMatrixFunction validateMatrix = new ValidateMatrixFunction();
+  CalculationOptions options = new CalculationOptions();
+  MantissaTransformer transformer = new MantissaTransformer();
   ExpressionParser parser = ExpressionParser();
   List<RegExp> impliedMultiplyPatterns = [TranslatePattern.numberX, TranslatePattern.xNumber,
     TranslatePattern.numberParen, TranslatePattern.xAdj, TranslatePattern.powerNumber, TranslatePattern.parenNumber];
@@ -65,13 +72,24 @@ class Translator {
     return input.replaceAll("`", " `1 * ");
   }
 
-  // translate matrix expression such as 'Matrix1+Matrix2'
   String translateMatrixExpr(String input) {
-    String translated;
-    translated = input.replaceAll("\$+&", "\$ + &");
-    translated = translated.replaceAll("\$-&", "\$ - &");
-    translated = translated.replaceAll("\$*&", "\$ * &");
-    translated = translated.replaceAll("\$/&", "\$ / &");
+    List<String> sanitizedInput = _sanitizeMatrixInput(input);
+
+    // get the size of matrices
+    List<int> matrix1Size =  _matrixSize(sanitizedInput[0]);
+    List<int> matrix2Size =  _matrixSize(sanitizedInput[2]);
+
+    // get the values of matrices and operator
+    List<String> matrix1Values = sanitizedInput[0].replaceAll(RegExp(r'(&|\$)'), "").split(RegExp(r'(@|;)')).where((item) => item.isNotEmpty).toList();
+    String operator = sanitizedInput[1];
+    List<String> matrix2Values = sanitizedInput[2].replaceAll(RegExp(r'&|\$'), "").split(RegExp(r'(@|;)')).where((item) => item.isNotEmpty).toList();
+
+    // simplify matrix values and recreate it
+    String matrix1 = _evaluateMatrix(matrix1Size, matrix1Values);
+    String matrix2 = _evaluateMatrix(matrix2Size, matrix2Values);
+
+    String translated = matrix1 + " " + operator +  " " + matrix2;
+
     return translated;
   }
 
@@ -84,4 +102,60 @@ class Translator {
     return translated;
   }
 
+  // translate matrix expression such as 'Matrix1+Matrix2'
+  List<String> _sanitizeMatrixInput(String input){
+    input = input.replaceAll("\$+&", "\$ + &");
+    input = input.replaceAll("\$-&", "\$ - &");
+    input = input.replaceAll("\$*&", "\$ * &");
+    input = input.replaceAll("\$/&", "\$ / &");
+
+    List<String> sanitizedInput = input.split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
+
+    return sanitizedInput;
+  }
+
+  // returns the Matrix size as a list of [row, col]
+  List<int> _matrixSize(String sanitizedInput){
+    List<String> matrixRow = sanitizedInput.replaceAll(RegExp(r'(&|\$)'), "").split("@").where((item) => item.isNotEmpty).toList();
+    int matrixRowSize = matrixRow.length;
+    int matrixColSize = matrixRow[0].split(";").where((item) => item.isNotEmpty).toList().length;
+    List<int> matrixSize = [matrixRowSize, matrixColSize];
+
+    return matrixSize;
+  }
+
+  String _evaluateMatrix(matrixSize, matrixValues){
+    String matrix = "&";
+    int count = 0;
+
+    for(int r = 0; r < matrixSize[0]; r++){
+      for(int c = 0; c < matrixSize[1]; c++) {
+        String token = matrixValues[count];
+        // check if math expression
+        if (validateMatrix.isMathFunction(token)) {
+          //AdvancedCalculator advancedCalculator = new AdvancedCalculator();
+          CalculateFunction calculateFunction = LibraryLoader().loadCalculateFunction();
+          // evaluate the math expression
+          String expression = translate(token, options);
+          double results = calculateFunction(Utf8.toUtf8(expression));  // call to backend evaluator
+          matrix += transformer.transform(results, options.decimalPlaces) + ";";
+
+          // double results = advancedCalculator.getCalculator().calculateFunction(Utf8.toUtf8(expression));  // call to backend evaluator
+          // matrix += advancedCalculator.getCalculator().transformer.transform(results, options.decimalPlaces) + ";";
+        }
+        else {
+          matrix += token + ";";
+        }
+        count++;
+      }
+      matrix += "@";
+    }
+    matrix += "\$";
+
+    // cleanup matrix string format
+    matrix = matrix.replaceAll(";@", "@");
+    matrix = matrix.replaceAll("@\$", "\$");
+
+    return matrix;
+  }
 }

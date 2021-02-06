@@ -109,6 +109,9 @@ void main() {
       test('3x3', () {
         expect(translator.translateMatrixExpr('&1;2;3@4;5;6@7;8;9\$-&1;2;3@4;5;6@7;8;9\$'), '&1;2;3@4;5;6@7;8;9\$ - &1;2;3@4;5;6@7;8;9\$');
       });
+      test('+ with simple math expressions', () {
+        expect(translator.translateMatrixExpr('&(1+2);(13-9)@(2*2);(0/9)\$+&4;5@4;7\$'), '&3;4@4;0\$ + &4;5@4;7\$');
+      });
     });
     group('unclosed parentheses:', () {
       test('expression 1', () {
