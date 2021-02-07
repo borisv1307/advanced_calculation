@@ -19,7 +19,7 @@ void main() {
     List<String> matrixValues = ["(cos(0)+2)","4","5", "6"];
 
     CalculateFunction calculateFunction = (Pointer<Utf8> input){
-      return 3;
+      return 3.0;
     };
 
     setUpAll((){
@@ -30,7 +30,7 @@ void main() {
     });
 
     test('translated matrix output is received',(){
-      expect(actualOutput, '&3;4@5;6\$');
+      expect(actualOutput, '&3.0;4@5;6\$');
     });
   });
 }

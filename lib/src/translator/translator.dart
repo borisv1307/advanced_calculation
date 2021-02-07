@@ -1,17 +1,14 @@
 import 'package:advanced_calculation/angular_unit.dart';
 import 'package:advanced_calculation/calculation_options.dart';
-import 'package:advanced_calculation/src/input_validation/validate_matrix_function.dart';
+import 'package:advanced_calculation/src/input_validation/input_tokens.dart';
 import 'package:advanced_calculation/src/library_loader.dart';
 import 'package:advanced_calculation/src/parse/expression_parser.dart';
-import 'package:advanced_calculation/src/transform/mantissa_transformer.dart';
 import 'package:advanced_calculation/src/translator/translate_pattern.dart';
 import 'package:ffi/ffi.dart';
 
 class Translator {
   CalculateFunction calculateFunction;
-  ValidateMatrixFunction validateMatrix = new ValidateMatrixFunction();
   CalculationOptions options = new CalculationOptions();
-  MantissaTransformer transformer = new MantissaTransformer();
   ExpressionParser parser = ExpressionParser();
   List<RegExp> impliedMultiplyPatterns = [TranslatePattern.numberX, TranslatePattern.xNumber,
     TranslatePattern.numberParen, TranslatePattern.xAdj, TranslatePattern.powerNumber, TranslatePattern.parenNumber];
@@ -139,11 +136,11 @@ class Translator {
       for(int c = 0; c < matrixSize[1]; c++) {
         String token = matrixValues[count];
         // check if math expression
-        if (validateMatrix.isMathFunction(token)) {
+        if (_isMathExpression(token)) {
           // evaluate the math expression
           String expression = translate(token, options);
           double results = calculateFunction(Utf8.toUtf8(expression));  // call to backend evaluator
-          matrix += transformer.transform(results, options.decimalPlaces) + ";";
+          matrix += results.toString() + ";";
         }
         else {
           matrix += token + ";";
@@ -159,5 +156,16 @@ class Translator {
     matrix = matrix.replaceAll("@\$", "\$");
 
     return matrix;
+  }
+
+  bool _isMathExpression(String input){
+    bool checker = false;
+
+    if(InputTokens.specialOperators.any((element) => input.contains(element)) ||
+        InputTokens.validFunctions.any((element) => input.contains(element)) ||
+        InputTokens.multiParamFunctions.any((element) => input.contains(element)))
+      checker = true;
+
+    return checker;
   }
 }
