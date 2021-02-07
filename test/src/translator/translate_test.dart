@@ -102,7 +102,7 @@ void main() {
         expect(translator.translate('3√(4)',CalculationOptions()), '3 * sqrt ( 4 )');
       });
     });
-    group('correctly parses matrix expression', () {
+    group('correctly parses simple matrix expression', () {
       test('2x2', () {
         expect(translator.translateMatrixExpr('&1;2@3;4\$+&5;6@7;8\$'), '&1;2@3;4\$ + &5;6@7;8\$');
       });
