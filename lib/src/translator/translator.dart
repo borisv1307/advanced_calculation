@@ -8,6 +8,7 @@ import 'package:advanced_calculation/src/translator/translate_pattern.dart';
 import 'package:ffi/ffi.dart';
 
 class Translator {
+  CalculateFunction calculateFunction;
   ValidateMatrixFunction validateMatrix = new ValidateMatrixFunction();
   CalculationOptions options = new CalculationOptions();
   MantissaTransformer transformer = new MantissaTransformer();
@@ -15,6 +16,12 @@ class Translator {
   List<RegExp> impliedMultiplyPatterns = [TranslatePattern.numberX, TranslatePattern.xNumber,
     TranslatePattern.numberParen, TranslatePattern.xAdj, TranslatePattern.powerNumber, TranslatePattern.parenNumber];
   List<String> trigSuffixes = ['sin','cos','tan','sec','csc','cot','sinh','cosh','tanh','sech','csch','coth'];
+
+  Translator();
+
+  Translator.withLibraryLoader (LibraryLoader loader){
+    calculateFunction = (loader ?? LibraryLoader()).loadCalculateFunction();
+  }
 
 // translates display values of a calculator expressions into proper format for processing
   String translate(String input, CalculationOptions options) {
@@ -124,7 +131,7 @@ class Translator {
     return matrixSize;
   }
 
-  String evaluateMatrix(matrixSize, matrixValues){
+  String evaluateMatrix(List<int> matrixSize, List<String> matrixValues){
     String matrix = "&";
     int count = 0;
 
@@ -133,15 +140,10 @@ class Translator {
         String token = matrixValues[count];
         // check if math expression
         if (validateMatrix.isMathFunction(token)) {
-          //AdvancedCalculator advancedCalculator = new AdvancedCalculator();
-          CalculateFunction calculateFunction = LibraryLoader().loadCalculateFunction();
           // evaluate the math expression
           String expression = translate(token, options);
           double results = calculateFunction(Utf8.toUtf8(expression));  // call to backend evaluator
           matrix += transformer.transform(results, options.decimalPlaces) + ";";
-
-          // double results = advancedCalculator.getCalculator().calculateFunction(Utf8.toUtf8(expression));  // call to backend evaluator
-          // matrix += advancedCalculator.getCalculator().transformer.transform(results, options.decimalPlaces) + ";";
         }
         else {
           matrix += token + ";";
