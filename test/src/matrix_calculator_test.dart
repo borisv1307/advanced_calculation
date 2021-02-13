@@ -47,9 +47,9 @@ void main() {
     Pointer<Utf8> actualMatrix2;
     String actualOutput;
 
-    Pointer<Utf8> calculate(Pointer<Utf8> matrix1, Pointer<Utf8> matrix2, Pointer<Utf8> operand){
+    Pointer<Utf8> calculate(Pointer<Utf8> operator, Pointer<Utf8> matrix1, Pointer<Utf8> matrix2, double scalar1, double scalar2){
       actualMatrix1 = matrix1;
-      actualOperand = operand;
+      actualOperand = operator;
       actualMatrix2 = matrix2;
       return Utf8.toUtf8('&2;3@4;5\$');
     }
