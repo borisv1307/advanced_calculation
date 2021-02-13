@@ -8,7 +8,8 @@ typedef GraphCalculateFunction = double Function(Pointer<Utf8>, double x);
 typedef RawCalculateFunction = Double Function(Pointer<Utf8>);
 typedef CalculateFunction = double Function(Pointer<Utf8>);
 
-typedef MatrixFunction = Pointer<Utf8> Function(Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>);
+typedef RawMatrixFunction = Pointer<Utf8> Function(Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>, Double x, Double y);
+typedef MatrixFunction = Pointer<Utf8> Function(Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>, double x, double y);
 
 class LibraryLoader{
   static const FILE_NAME = "libcalc.so";
@@ -39,7 +40,7 @@ class LibraryLoader{
     MatrixFunction matrixFunction;
     try{
       matrixFunction = library
-          .lookup<NativeFunction<MatrixFunction>>("calculate_matr")
+          .lookup<NativeFunction<RawMatrixFunction>>("matrix_call")
           .asFunction();
     }on ArgumentError{
 

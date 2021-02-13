@@ -25,8 +25,7 @@ class MatrixCalculator{
       String expression = translator.translateMatrixExpr(input);
       List<String> tokens = expression.split(" ");
       Pointer<Utf8> resultPtr = matrixFunction(
-          Utf8.toUtf8(tokens[0]), Utf8.toUtf8(tokens[2]),
-          Utf8.toUtf8(tokens[1]));
+          Utf8.toUtf8(tokens[1]), Utf8.toUtf8(tokens[0]), Utf8.toUtf8(tokens[2]), 1.0, 1.0);
       return Utf8.fromUtf8(resultPtr);
     }
     else
