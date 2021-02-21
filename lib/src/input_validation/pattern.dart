@@ -9,4 +9,5 @@ class Pattern {
   static final validOperator = RegExp(r'^[+\-\/*]$');
   static final addSubtractOperator = RegExp(r'^[+\-]$');
   static final multiplyDivideOperator = RegExp(r'^[*\/]$');
+  static final validMatrixOperand = RegExp(r'^((\d*\.?)(\.\d+)?)?(𝜋|𝑒)?$', unicode: true);
 }

@@ -106,6 +106,92 @@ void main() {
         var string = '&`𝜋\$/&√(6.5);`min(5.89,max(`6,9.2,))\$';
         expect(tester.testMatrixFunction(string), equals(false));
       });
+
+      test('invalid matrix operations', () {
+        var string = '&1;2;3@6;`2;1\$+&4;5;6@4;7;0\$+';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('not more than 2 matrix operations', () {
+        var string = '&1;2;3@6;`2;1\$+&4;5;6@4;7;0\$+&4;5;6@4;7;0\$';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case for func matrix', () {
+        var string = 'abc(&1;0@9;4\$)';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case: func matrix operator matrix 1', () {
+        var string = 'abc(&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$)+&4;5@4;7\$';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case 1: matrix operator func matrix', () {
+        var string = '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$-abc(&4;5@4;7\$)';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case 2: matrix operator func matrix', () {
+        var string = '&-abc(&4;5@4;7\$)';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case: func matrix operator func matrix', () {
+        var string = 'transpose(&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$)*something(&4;5@4;7\$)';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case: matrix + value', () {
+        var string = '&1;2;3@7;8;`9\$+`𝜋';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid rref size', () {
+        // that is, numCol != (numRows+1)
+        var string = 'rref(&1;2;`3\$)';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid transpose size operation: transpose(2x3) + 2x2', () {
+        var string = 'transpose(&1;2;3@7;8;`9\$)+&1;2@3;4\$';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case1: calculatedMatrix + value', () {
+        var string = 'transpose(&1;2;3@7;8;`9\$)+`𝜋';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case2: calculatedMatrix + value', () {
+        var string = '2.5(&1;2;3@7;8;`9\$)+`𝜋';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case1: value + calculatedMatrix', () {
+        var string = '`𝜋+transpose(&1;2;3@7;8;`9\$)';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case2: value + calculatedMatrix', () {
+        var string = '`𝜋*2.5(&1;2;3@7;8;`9\$)';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case: calculatedMatrixValue + matrix', () {
+        var string = 'determinant(&1;2;3@7;8;`9\$)+&1;2;3@7;8;`9\$';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case: matrix + calculatedMatrixValue', () {
+        var string = '&1;2;3@7;8;`9\$+determinant(&1;2;3@7;8;`9\$)';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
+
+      test('invalid case: calculatedMatrix + calculatedMatrixValue', () {
+        var string = 'transpose(&1;2;3@7;8;`9\$)+determinant(&1;2;3@7;8;`9\$)';
+        expect(tester.testMatrixFunction(string), equals(false));
+      });
     });
 
     group('expression passes when a valid matrices function:', () {
@@ -194,8 +280,8 @@ void main() {
         expect(tester.testMatrixFunction(string), equals(true));
       });
 
-      test('1x1 / 1x2 with multi param expression', () {
-        var string = '&`𝜋\$/&√(6.5);`min(5.89, max(`6,9.2))\$';
+      test('valid 1x1 / 1x2 with multi param', () {
+        var string = '&`𝜋\$/&√(6.5);`min(5.89,9.2)\$';
         expect(tester.testMatrixFunction(string), equals(true));
       });
 
@@ -236,6 +322,117 @@ void main() {
 
       test('/ with complicated math expressions', () {
         var string = '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$/&fract(min(`cos(9),gcd(3,6)));5@4;`7\$';
+        expect(tester.testMatrixFunction(string), equals(true));
+      });
+
+      test('case1: func matrix', () {
+        var string = 'determinant(&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$)';
+        List<String> result = tester.sanitizeMatrixInput(string);
+        expect(result.length, 2);
+        expect(result[0], 'determinant');
+        expect(result[1], '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@');
+        expect(tester.testMatrixFunction(string), equals(true));
+      });
+
+      test('case2: func matrix', () {
+        // that is, numCols == (numRows+1)
+        var string = 'rref(&1;2;`3@4;5;6\$)';
+        expect(tester.testMatrixFunction(string), equals(true));
+      });
+
+      test('case: func matrix operator matrix', () {
+        var string = 'transpose(&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$)+&4;5@4;7\$';
+        List<String> result = tester.sanitizeMatrixInput(string);
+        expect(result.length, 4);
+        expect(result[0], 'transpose');
+        expect(result[1], '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@');
+        expect(result[2], '+');
+        expect(result[3], '&4;5@4;7@');
+        expect(tester.testMatrixFunction(string), equals(true));
+      });
+
+      test('case: func matrix operator value', () {
+        var string = 'determinant(&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$)+4.3';
+        List<String> result = tester.sanitizeMatrixInput(string);
+        expect(result.length, 4);
+        expect(result[0], 'determinant');
+        expect(result[1], '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@');
+        expect(result[2], '+');
+        expect(result[3], '4.3');
+        expect(tester.testMatrixFunction(string), equals(true));
+      });
+
+      test('case: scalar matrix operator matrix', () {
+        var string = '2(&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$)+&4;5@4;7\$';
+        List<String> result = tester.sanitizeMatrixInput(string);
+        expect(result.length, 4);
+        expect(result[0], '2');
+        expect(result[1], '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@');
+        expect(result[2], '+');
+        expect(result[3], '&4;5@4;7@');
+        expect(tester.testMatrixFunction(string), equals(true));
+      });
+
+      test('case: matrix operator func matrix', () {
+        var string = '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$-transpose(&4;5@4;7\$)';
+        List<String> result = tester.sanitizeMatrixInput(string);
+        expect(result.length, 4);
+        expect(result[0], '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@');
+        expect(result[1], '-');
+        expect(result[2], 'transpose');
+        expect(result[3], '&4;5@4;7@');
+        expect(tester.testMatrixFunction(string), equals(true));
+      });
+
+      test('case: matrix operator scalar matrix', () {
+        var string = '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$-`𝜋(&4;5@4;7\$)';
+        List<String> result = tester.sanitizeMatrixInput(string);
+        expect(result.length, 4);
+        expect(result[0], '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@');
+        expect(result[1], '-');
+        expect(result[2], '`𝜋');
+        expect(result[3], '&4;5@4;7@');
+        expect(tester.testMatrixFunction(string), equals(true));
+      });
+
+      test('case: value operator func matrix', () {
+        var string = '2.5-permanent(&4;5@4;7\$)';
+        expect(tester.testMatrixFunction(string), equals(true));
+      });
+
+      test('case1: func matrix operator func matrix', () {
+        var string = 'transpose(&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$)*transpose(&4;5@4;7\$)';
+        List<String> result = tester.sanitizeMatrixInput(string);
+        expect(result.length, 5);
+        expect(result[0], 'transpose');
+        expect(result[1], '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@');
+        expect(result[2], '*');
+        expect(result[3], 'transpose');
+        expect(result[4], '&4;5@4;7@');
+        expect(tester.testMatrixFunction(string), equals(true));
+      });
+
+      test('case2: func matrix operator func matrix', () {
+        var string = 'determinant(&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$)*permanent(&4;5@4;7\$)';
+        List<String> result = tester.sanitizeMatrixInput(string);
+        expect(result.length, 5);
+        expect(result[0], 'determinant');
+        expect(result[1], '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@');
+        expect(result[2], '*');
+        expect(result[3], 'permanent');
+        expect(result[4], '&4;5@4;7@');
+        expect(tester.testMatrixFunction(string), equals(true));
+      });
+
+      test('case: scalar matrix operator scalar matrix', () {
+        var string = '2.0(&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)\$)*`𝑒(&4;5@4;7\$)';
+        List<String> result = tester.sanitizeMatrixInput(string);
+        expect(result.length, 5);
+        expect(result[0], '2.0');
+        expect(result[1], '&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@');
+        expect(result[2], '*');
+        expect(result[3], '`𝑒');
+        expect(result[4], '&4;5@4;7@');
         expect(tester.testMatrixFunction(string), equals(true));
       });
     });
