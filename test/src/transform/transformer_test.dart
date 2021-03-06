@@ -16,23 +16,25 @@ void main(){
 
   setUpAll((){
     mantissaTransformer = MockMantissaTransformer();
-    when(mantissaTransformer.transform('1', -1)).thenReturn('2');
+    when(mantissaTransformer.transform('2', -1)).thenReturn('3');
 
     displayStyleTransformer = MockDisplayStyleTransformer();
-    when(displayStyleTransformer.transform('2', DisplayStyle.NORMAL)).thenReturn('3');
+    when(displayStyleTransformer.transform('1.0', DisplayStyle.NORMAL)).thenReturn('2');
 
     Transformer transformer = Transformer(mantissaTransformer: mantissaTransformer,displayStyleTransformer: displayStyleTransformer);
 
     output = transformer.transform(1,CalculationOptions());
   });
 
-  test('transforms mantissa',(){
-    verify(mantissaTransformer.transform('1', -1)).called(1);
+  test('transforms style',(){
+    verify(displayStyleTransformer.transform('1.0', DisplayStyle.NORMAL)).called(1);
   });
 
-  test('transforms style',(){
-    verify(displayStyleTransformer.transform('2', DisplayStyle.NORMAL)).called(1);
+
+  test('transforms mantissa',(){
+    verify(mantissaTransformer.transform('2', -1)).called(1);
   });
+
 
   test('transforms',(){
     expect(output,'3');
