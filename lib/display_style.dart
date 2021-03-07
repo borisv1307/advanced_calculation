@@ -1,0 +1,3 @@
+enum DisplayStyle{
+  NORMAL, SCIENTIFIC, ENGINEERING
+}
