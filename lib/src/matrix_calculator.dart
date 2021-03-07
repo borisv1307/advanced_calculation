@@ -22,10 +22,9 @@ class MatrixCalculator{
   String calculate(String input){
     bool validExpression = tester.testMatrixFunction(input);
     if(validExpression) {
-      String expression = translator.translateMatrixExpr(input);
-      List<String> tokens = expression.split(" ");
-      Pointer<Utf8> resultPtr = matrixFunction(
-          Utf8.toUtf8(tokens[1]), Utf8.toUtf8(tokens[0]), Utf8.toUtf8(tokens[2]), 1.0, 1.0);
+      List<String> tokens = translator.translateMatrixExpr(tester.validMatrixExpression);
+      Pointer<Utf8> resultPtr = matrixFunction(Utf8.toUtf8(tokens[0]), Utf8.toUtf8(tokens[1]), Utf8.toUtf8(tokens[2]),
+          Utf8.toUtf8(tokens[3]), Utf8.toUtf8(tokens[4]), double.parse(tokens[5]), double.parse(tokens[6]));
       return Utf8.fromUtf8(resultPtr);
     }
     else

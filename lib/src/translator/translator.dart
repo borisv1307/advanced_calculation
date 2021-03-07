@@ -76,23 +76,41 @@ class Translator {
     return input.replaceAll("`", " `1 * ");
   }
 
-  String translateMatrixExpr(String input) {
-    List<String> sanitizedInput = _sanitizeMatrixInput(input);
+  List<String> translateMatrixExpr(List<String> validMatrixExpr) {
+    String operator = validMatrixExpr[0];
+    String matrixFunc1 = validMatrixExpr[1];
+    String matrix1 = validMatrixExpr[2];
+    String matrixFunc2 = validMatrixExpr[3];
+    String matrix2 = validMatrixExpr[4];
+    String scalar1 = validMatrixExpr[5];
+    String scalar2 = validMatrixExpr[6];
 
-    // get the size of matrices
-    List<int> matrix1Size =  _matrixSize(sanitizedInput[0]);
-    List<int> matrix2Size =  _matrixSize(sanitizedInput[2]);
+    if(operator.isEmpty)
+      operator = "null";
+    if(matrixFunc1.isEmpty)
+      matrixFunc1 = "null";
+    if(matrixFunc2.isEmpty)
+      matrixFunc2 = "null";
+    if(scalar1.isEmpty)
+      scalar1 = "1.0";
+    if(scalar2.isEmpty)
+      scalar2 = "1.0";
 
-    // get the values of matrices and operator
-    List<String> matrix1Values = sanitizedInput[0].replaceAll(RegExp(r'(&|\$)'), "").split(RegExp(r'(@|;)')).where((item) => item.isNotEmpty).toList();
-    String operator = sanitizedInput[1];
-    List<String> matrix2Values = sanitizedInput[2].replaceAll(RegExp(r'&|\$'), "").split(RegExp(r'(@|;)')).where((item) => item.isNotEmpty).toList();
+    if(matrix1.startsWith("&") && matrix1.endsWith("@")){
+      List<int> matrix1Size =  _matrixSize(matrix1);
+      List<String> matrix1Values = matrix1.replaceAll(RegExp(r'(&|\$)'), "").
+        split(RegExp(r'(@|;)')).where((item) => item.isNotEmpty).toList();
+      matrix1 = evaluateMatrix(matrix1Size, matrix1Values);
+    }
 
-    // simplify matrix values and recreate it
-    String matrix1 = evaluateMatrix(matrix1Size, matrix1Values);
-    String matrix2 = evaluateMatrix(matrix2Size, matrix2Values);
+    if(matrix2.startsWith("&") && matrix2.endsWith("@")){
+      List<int> matrix2Size =  _matrixSize(matrix2);
+      List<String> matrix2Values = matrix2.replaceAll(RegExp(r'(&|\$)'), "").
+        split(RegExp(r'(@|;)')).where((item) => item.isNotEmpty).toList();
+      matrix2 = evaluateMatrix(matrix2Size, matrix2Values);
+    }
 
-    String translated = matrix1 + " " + operator +  " " + matrix2;
+    List<String> translated = [operator, matrixFunc1, matrix1, matrixFunc2, matrix2, scalar1, scalar2];
 
     return translated;
   }
@@ -106,21 +124,10 @@ class Translator {
     return translated;
   }
 
-  // translate matrix expression such as 'Matrix1+Matrix2'
-  List<String> _sanitizeMatrixInput(String input){
-    input = input.replaceAll("\$+&", "\$ + &");
-    input = input.replaceAll("\$-&", "\$ - &");
-    input = input.replaceAll("\$*&", "\$ * &");
-    input = input.replaceAll("\$/&", "\$ / &");
-
-    List<String> sanitizedInput = input.split(TranslatePattern.spacing).where((item) => item.isNotEmpty).toList();
-
-    return sanitizedInput;
-  }
-
   // returns the Matrix size as a list of [row, col]
   List<int> _matrixSize(String sanitizedInput){
-    List<String> matrixRow = sanitizedInput.replaceAll(RegExp(r'(&|\$)'), "").split("@").where((item) => item.isNotEmpty).toList();
+    List<String> matrixRow = sanitizedInput.replaceAll(RegExp(r'(&|\$)'), "").
+      split("@").where((item) => item.isNotEmpty).toList();
     int matrixRowSize = matrixRow.length;
     int matrixColSize = matrixRow[0].split(";").where((item) => item.isNotEmpty).toList().length;
     List<int> matrixSize = [matrixRowSize, matrixColSize];

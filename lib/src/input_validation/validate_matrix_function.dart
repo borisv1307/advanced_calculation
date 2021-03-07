@@ -6,6 +6,7 @@ import 'package:advanced_calculation/src/input_validation/pattern.dart';
 class ValidateMatrixFunction {
   ValidateFunction validate = new ValidateFunction();
   String specialMatrixFunction = "";
+  List<String> validMatrixExpression = new List<String>();
 
   // support different valid combinations for 2 matrix operations only
   bool testMatrixFunction(String expression){
@@ -19,7 +20,7 @@ class ValidateMatrixFunction {
       String matrixFunction = input[0];
       List<String> matrix1Values = _getMatrixValues(input[1]);
 
-      if( _sanitizeMatrixFunction(matrixFunction) &&
+      if(_sanitizeMatrixFunction(matrixFunction, input[1]) &&
           _isValidMatrixFunction(specialMatrixFunction, input[1].replaceAll("&", "")) &&
           _checkValues(matrix1Values))
         valid = true;
@@ -33,8 +34,10 @@ class ValidateMatrixFunction {
 
       if (_validateOperator(operator) &&
           _validateSize(input[0].replaceAll("&", ""), input[2].replaceAll("&", ""), operator) &&
-          _checkValues(matrix1Values) && _checkValues(matrix2Values))
+          _checkValues(matrix1Values) && _checkValues(matrix2Values)) {
         valid = true;
+        _createValidMatrixExp(operator, "", input[0], "", input[2]);
+      }
     }
     else if(inputSize == 4){
       // Cases: matrixFunction matrix operation matrix/Value
@@ -48,8 +51,10 @@ class ValidateMatrixFunction {
 
           if (_validateOperator(operator) &&
               _validateMatrixFuncSize(matrixFunction, "", input[1], input[3], operator) &&
-              _checkValues(matrix1Values) && _checkValues(matrix2Values))
+              _checkValues(matrix1Values) && _checkValues(matrix2Values)) {
             valid = true;
+            _createValidMatrixExp(operator, matrixFunction, input[1], "", input[3]);
+          }
       }
       // Cases: matrix/Value operation matrixFunction matrix
       // eg: matrix1 + transpose (matrix2)
@@ -62,8 +67,10 @@ class ValidateMatrixFunction {
 
         if (_validateOperator(operator) && _isValidMatrixFunction(matrixFunction, input[3].replaceAll("&", "")) &&
             _validateMatrixFuncSize(matrixFunction, "", input[3], input[0], operator) &&
-            _checkValues(matrix1Values) && _checkValues(matrix2Values))
+            _checkValues(matrix1Values) && _checkValues(matrix2Values)) {
           valid = true;
+          _createValidMatrixExp(operator, "", input[0], matrixFunction, input[3]);
+        }
       }
     }
     // Cases: matrixFunction matrix/Value operation matrixFunction matrix/Value
@@ -81,8 +88,10 @@ class ValidateMatrixFunction {
           _isValidMatrixFunction(matrixFunction2, input[4].replaceAll("&", "")) &&
           _validateOperator(operator) &&
           _validateMatrixFuncSize(matrixFunction1, matrixFunction2, input[1], input[4], operator) &&
-          _checkValues(matrix1Values) && _checkValues(matrix2Values))
+          _checkValues(matrix1Values) && _checkValues(matrix2Values)) {
         valid = true;
+        _createValidMatrixExp(operator, matrixFunction1, input[1], matrixFunction2, input[4]);
+      }
     }
 
     return valid;
@@ -264,6 +273,37 @@ class ValidateMatrixFunction {
     return matrix;
   }
 
+  void _createValidMatrixExp(String operator, String matrixFunc1, String matrix1,
+    String matrixFunc2, String matrix2){
+    validMatrixExpression.insert(0, operator);
+
+    //if scalar value, add expressions at correct index
+    if(Pattern.validMatrixOperand.hasMatch(validate.sanitizeToken(matrixFunc1)))
+      validMatrixExpression.insert(1, "");
+    //if matrixFunc, add expressions at correct index
+    else
+      validMatrixExpression.insert(1, matrixFunc1);
+
+    validMatrixExpression.insert(2, matrix1);
+
+    if(Pattern.validMatrixOperand.hasMatch(validate.sanitizeToken(matrixFunc2)))
+      validMatrixExpression.insert(3, "");
+    else
+      validMatrixExpression.insert(3, matrixFunc2);
+
+    validMatrixExpression.insert(4, matrix2);
+
+    if(Pattern.validMatrixOperand.hasMatch(validate.sanitizeToken(matrixFunc1)))
+      validMatrixExpression.insert(5, matrixFunc1);
+    else
+      validMatrixExpression.insert(5, "");
+
+    if(Pattern.validMatrixOperand.hasMatch(validate.sanitizeToken(matrixFunc2)))
+      validMatrixExpression.insert(6, matrixFunc2);
+    else
+      validMatrixExpression.insert(6, "");
+  }
+
   bool _validateMatrixFuncSize(String matrixFunction1, String matrixFunction2,
       String matrix1, String matrix2, String operator){
     bool checker = false;
@@ -307,7 +347,7 @@ class ValidateMatrixFunction {
     return checker;
   }
 
-  bool _sanitizeMatrixFunction(String matrixFunction){
+  bool _sanitizeMatrixFunction(String matrixFunction, String matrix){
     bool checker = false;
     // split for special leftover case: value + function
     if(InputTokens.matrixOperators.any((element) => matrixFunction.contains(element))){
@@ -321,17 +361,21 @@ class ValidateMatrixFunction {
         where((item) => item.isNotEmpty).toList();
 
       specialMatrixFunction = values[2];
+      String operator = values[1];
       String operand = validate.sanitizeToken(values[0]);
       if(_isMatrixReturnMatrixFunction(specialMatrixFunction) &&
           !(Pattern.validMatrixOperand.hasMatch(operand)))
-          checker = true;
+        checker = true;
       else if (_isMatrixReturnValuesFunction(specialMatrixFunction) &&
           Pattern.validMatrixOperand.hasMatch(operand))
         checker = true;
+
+      _createValidMatrixExp(operator, "", operand, specialMatrixFunction, matrix);
     }
     else {
       specialMatrixFunction = matrixFunction;
       checker = true;
+      _createValidMatrixExp("", matrixFunction, matrix, "", "");
     }
 
     return checker;

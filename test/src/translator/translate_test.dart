@@ -104,10 +104,27 @@ void main() {
     });
     group('correctly parses simple matrix expression', () {
       test('2x2', () {
-        expect(translator.translateMatrixExpr('&1;2@3;4\$+&5;6@7;8\$'), '&1;2@3;4\$ + &5;6@7;8\$');
+        List<String> testExpr = ["+", "", "&1;2@3;4@", "", "&5;6@7;8@", "", ""];
+        List<String> results = translator.translateMatrixExpr(testExpr);
+        expect(results[0], "+");
+        expect(results[1], "null");
+        expect(results[2], "&1;2@3;4\$");
+        expect(results[3], "null");
+        expect(results[4], "&5;6@7;8\$");
+        expect(results[5], "1.0");
+        expect(results[6], "1.0");
       });
       test('3x3', () {
-        expect(translator.translateMatrixExpr('&1;2;3@4;5;6@7;8;9\$-&1;2;3@4;5;6@7;8;9\$'), '&1;2;3@4;5;6@7;8;9\$ - &1;2;3@4;5;6@7;8;9\$');
+        List<String> testExpr = ["-", "", "&1;2;3@4;5;6@7;8;9@", "", "&1;2;3@4;5;6@7;8;9@", "", "2.5"];
+        List<String> results = translator.translateMatrixExpr(testExpr);
+        expect(results[0], "-");
+        expect(results[1], "null");
+        expect(results[2], "&1;2;3@4;5;6@7;8;9\$");
+        expect(results[3], "null");
+        expect(results[4], "&1;2;3@4;5;6@7;8;9\$");
+        expect(results[5], "1.0");
+        expect(results[6], "2.5");
+
       });
     });
     group('unclosed parentheses:', () {
