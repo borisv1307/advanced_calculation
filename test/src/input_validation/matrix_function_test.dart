@@ -343,15 +343,16 @@ void main() {
 
       test('case2: func matrix', () {
         // that is, numCols == (numRows+1)
-        var string = 'rref(&1;2;`3@4;5;6\$)';
+        var string = 'reduced_row_echelon(&1;2;`3@4;5;6\$)';
         expect(tester.testMatrixFunction(string), equals(true));
         expect(tester.validMatrixExpression[0], "");
-        expect(tester.validMatrixExpression[1], "rref");
+        expect(tester.validMatrixExpression[1], "reduced_row_echelon");
         expect(tester.validMatrixExpression[2], "&1;2;`3@4;5;6@");
         expect(tester.validMatrixExpression[3], "");
         expect(tester.validMatrixExpression[4], "");
         expect(tester.validMatrixExpression[5], "");
         expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "true");
       });
 
       test('case: scalar matrix', () {
@@ -364,6 +365,7 @@ void main() {
         expect(tester.validMatrixExpression[4], "");
         expect(tester.validMatrixExpression[5], "2.5");
         expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "true");
       });
 
       test('case: func matrix operator matrix', () {
@@ -382,6 +384,7 @@ void main() {
         expect(tester.validMatrixExpression[4], "&4;5@4;7@");
         expect(tester.validMatrixExpression[5], "");
         expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case: func matrix operator value', () {
@@ -400,6 +403,7 @@ void main() {
         expect(tester.validMatrixExpression[4], "4.3");
         expect(tester.validMatrixExpression[5], "");
         expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case: scalar matrix operator matrix', () {
@@ -418,6 +422,7 @@ void main() {
         expect(tester.validMatrixExpression[4], "&4;5@4;7@");
         expect(tester.validMatrixExpression[5], "2");
         expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case: matrix operator func matrix', () {
@@ -436,6 +441,7 @@ void main() {
         expect(tester.validMatrixExpression[4], "&4;5@4;7@");
         expect(tester.validMatrixExpression[5], "");
         expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case: matrix operator scalar matrix', () {
@@ -454,6 +460,7 @@ void main() {
         expect(tester.validMatrixExpression[4], "&4;5@4;7@");
         expect(tester.validMatrixExpression[5], "");
         expect(tester.validMatrixExpression[6], "`𝜋");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case: value operator func matrix', () {
@@ -466,6 +473,7 @@ void main() {
         expect(tester.validMatrixExpression[4], "&4;5@4;7@");
         expect(tester.validMatrixExpression[5], "");
         expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case1: func matrix operator func matrix', () {
@@ -485,6 +493,7 @@ void main() {
         expect(tester.validMatrixExpression[4], "&4;5@4;7@");
         expect(tester.validMatrixExpression[5], "");
         expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case2: func matrix operator func matrix', () {
@@ -497,6 +506,7 @@ void main() {
         expect(result[3], 'permanent');
         expect(result[4], '&4;5@4;7@');
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case: scalar matrix operator scalar matrix', () {
@@ -516,6 +526,7 @@ void main() {
         expect(tester.validMatrixExpression[4], "&4;5@4;7@");
         expect(tester.validMatrixExpression[5], "2.0");
         expect(tester.validMatrixExpression[6], "`𝑒");
+        expect(tester.validMatrixExpression[7], "false");
       });
     });
 

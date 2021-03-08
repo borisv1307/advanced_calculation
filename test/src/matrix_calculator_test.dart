@@ -47,21 +47,24 @@ void main() {
     double actualScalar1;
     double actualScalar2;
     String actualOutput;
+    Pointer<Utf8> actualIsMatrix2Empty;
 
     Pointer<Utf8> calculate(Pointer<Utf8> operator, Pointer<Utf8> matrixFunction1,
-      Pointer<Utf8> matrix1, Pointer<Utf8> matrixFunction2, Pointer<Utf8> matrix2, double scalar1, double scalar2){
+      Pointer<Utf8> matrix1, Pointer<Utf8> matrixFunction2, Pointer<Utf8> matrix2,
+        double scalar1, double scalar2, Pointer<Utf8> isMatrix2Empty){
       actualMatrix1 = matrix1;
       actualOperand = operator;
       actualMatrix2 = matrix2;
       actualScalar1 = scalar1;
       actualScalar2 = scalar2;
+      actualIsMatrix2Empty = isMatrix2Empty;
 
       return Utf8.toUtf8('&6;8@10;12\$');
     }
 
     setUpAll((){
-      List<String> expression = ["+", "", "&1;2@3;4@", "", "&1;1@1;1@", "2", "4"];
-      List<String> translatedExpr = ["+", "null", "&1;2@3;4@", "null", "&1;1@1;1@", "2", "4"];
+      List<String> expression = ["+", "", "&1;2@3;4@", "", "&1;1@1;1@", "2", "4", "false"];
+      List<String> translatedExpr = ["add", "null", "&1;2@3;4@", "null", "&1;1@1;1@", "2", "4", "false"];
       MockLibraryLoader loader = MockLibraryLoader();
       MockTranslator translator = MockTranslator();
       when(translator.translateMatrixExpr(expression)).thenReturn(translatedExpr);
@@ -79,7 +82,7 @@ void main() {
     });
 
     test('operand is translated',(){
-      expect('+',Utf8.fromUtf8(actualOperand));
+      expect('add',Utf8.fromUtf8(actualOperand));
     });
 
     test('scalar1 is translated',(){
@@ -88,6 +91,10 @@ void main() {
 
     test('scalar2 is translated',(){
       expect(4.0, actualScalar2);
+    });
+
+    test('isMatrix2Empty is translated',(){
+      expect('false', Utf8.fromUtf8(actualIsMatrix2Empty));
     });
 
     test('output is received',(){

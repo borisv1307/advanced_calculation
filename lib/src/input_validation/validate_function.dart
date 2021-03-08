@@ -4,6 +4,7 @@ import 'package:advanced_calculation/src/input_validation/open_subexpression_sta
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/parse/expression_parser.dart';
 import 'package:advanced_calculation/src/translator/translate_pattern.dart';
+import 'package:advanced_calculation/src/helper/negative_helper.dart';
 import 'start_state.dart';
 import 'state.dart';
 
@@ -16,23 +17,13 @@ class ValidateFunction {
     return sanitizedInput;
   }
 
-  String sanitizeToken(String token){
-    String sanitizedToken = token;
-    //handle special negatives for complex functions
-    while(sanitizedToken.startsWith('`') && sanitizedToken.length > 1) {
-      sanitizedToken = sanitizedToken.substring(1); // remove the negatives
-    }
-
-    return sanitizedToken;
-  }
-
   int findSyntaxError(String input) {
     int invalidTokenIndex = -1;
     List<String> inputString = _sanitizeInput(input);
     State currentState = StartState(0, false);
 
     for(int i=0;(i<inputString.length && invalidTokenIndex == -1);i++) {
-      String token = sanitizeToken(inputString[i]);
+      String token = NegativeHelper().sanitizeToken(inputString[i]);
 
       if (InputTokens.operators.contains(token) ||
           Pattern.validOperand.hasMatch(token)) { // numbers or operands
