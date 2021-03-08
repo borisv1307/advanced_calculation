@@ -10,7 +10,7 @@ class ValidateMatrixFunction {
   NegativeHelper negativesHelper = NegativeHelper();
   ValidateFunction validate = ValidateFunction();
   String specialMatrixFunction = "";
-  List<String> validMatrixExpression = List<String>();
+  List<String> validMatrixExpression = [];
 
   // support different valid combinations for 2 matrix operations only
   bool testMatrixFunction(String expression){
