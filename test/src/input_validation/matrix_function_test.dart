@@ -243,6 +243,14 @@ void main() {
       test('2x3 / 3x2', () {
         var string = '&1;2;3@4;5;6\$/&4;5@7;8@0;1\$';
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "/");
+        expect(tester.validMatrixExpression[1], "");
+        expect(tester.validMatrixExpression[2], "&1;2;3@4;5;6@");
+        expect(tester.validMatrixExpression[3], "");
+        expect(tester.validMatrixExpression[4], "&4;5@7;8@0;1@");
+        expect(tester.validMatrixExpression[5], "");
+        expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('+ for complex expression with size greater than 1x1 matrix', () {
@@ -336,8 +344,29 @@ void main() {
 
       test('case2: func matrix', () {
         // that is, numCols == (numRows+1)
-        var string = 'rref(&1;2;`3@4;5;6\$)';
+        var string = 'reduced_row_echelon(&1;2;`3@4;5;6\$)';
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "");
+        expect(tester.validMatrixExpression[1], "reduced_row_echelon");
+        expect(tester.validMatrixExpression[2], "&1;2;`3@4;5;6@");
+        expect(tester.validMatrixExpression[3], "");
+        expect(tester.validMatrixExpression[4], "");
+        expect(tester.validMatrixExpression[5], "");
+        expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "true");
+      });
+
+      test('case: scalar matrix', () {
+        var string = '2.5(&4;5@4;7\$)';
+        expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "");
+        expect(tester.validMatrixExpression[1], "");
+        expect(tester.validMatrixExpression[2], "&4;5@4;7@");
+        expect(tester.validMatrixExpression[3], "");
+        expect(tester.validMatrixExpression[4], "");
+        expect(tester.validMatrixExpression[5], "2.5");
+        expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "true");
       });
 
       test('case: func matrix operator matrix', () {
@@ -349,6 +378,14 @@ void main() {
         expect(result[2], '+');
         expect(result[3], '&4;5@4;7@');
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "+");
+        expect(tester.validMatrixExpression[1], "transpose");
+        expect(tester.validMatrixExpression[2], "&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@");
+        expect(tester.validMatrixExpression[3], "");
+        expect(tester.validMatrixExpression[4], "&4;5@4;7@");
+        expect(tester.validMatrixExpression[5], "");
+        expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case: func matrix operator value', () {
@@ -360,6 +397,14 @@ void main() {
         expect(result[2], '+');
         expect(result[3], '4.3');
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "+");
+        expect(tester.validMatrixExpression[1], "determinant");
+        expect(tester.validMatrixExpression[2], "&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@");
+        expect(tester.validMatrixExpression[3], "");
+        expect(tester.validMatrixExpression[4], "4.3");
+        expect(tester.validMatrixExpression[5], "");
+        expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case: scalar matrix operator matrix', () {
@@ -371,6 +416,14 @@ void main() {
         expect(result[2], '+');
         expect(result[3], '&4;5@4;7@');
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "+");
+        expect(tester.validMatrixExpression[1], "");
+        expect(tester.validMatrixExpression[2], "&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@");
+        expect(tester.validMatrixExpression[3], "");
+        expect(tester.validMatrixExpression[4], "&4;5@4;7@");
+        expect(tester.validMatrixExpression[5], "2");
+        expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case: matrix operator func matrix', () {
@@ -382,6 +435,14 @@ void main() {
         expect(result[2], 'transpose');
         expect(result[3], '&4;5@4;7@');
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "-");
+        expect(tester.validMatrixExpression[1], "");
+        expect(tester.validMatrixExpression[2], "&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@");
+        expect(tester.validMatrixExpression[3], "transpose");
+        expect(tester.validMatrixExpression[4], "&4;5@4;7@");
+        expect(tester.validMatrixExpression[5], "");
+        expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case: matrix operator scalar matrix', () {
@@ -393,11 +454,27 @@ void main() {
         expect(result[2], '`𝜋');
         expect(result[3], '&4;5@4;7@');
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "-");
+        expect(tester.validMatrixExpression[1], "");
+        expect(tester.validMatrixExpression[2], "&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@");
+        expect(tester.validMatrixExpression[3], "");
+        expect(tester.validMatrixExpression[4], "&4;5@4;7@");
+        expect(tester.validMatrixExpression[5], "");
+        expect(tester.validMatrixExpression[6], "`𝜋");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case: value operator func matrix', () {
         var string = '2.5-permanent(&4;5@4;7\$)';
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "-");
+        expect(tester.validMatrixExpression[1], "");
+        expect(tester.validMatrixExpression[2], "2.5");
+        expect(tester.validMatrixExpression[3], "permanent");
+        expect(tester.validMatrixExpression[4], "&4;5@4;7@");
+        expect(tester.validMatrixExpression[5], "");
+        expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case1: func matrix operator func matrix', () {
@@ -410,6 +487,14 @@ void main() {
         expect(result[3], 'transpose');
         expect(result[4], '&4;5@4;7@');
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "*");
+        expect(tester.validMatrixExpression[1], "transpose");
+        expect(tester.validMatrixExpression[2], "&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@");
+        expect(tester.validMatrixExpression[3], "transpose");
+        expect(tester.validMatrixExpression[4], "&4;5@4;7@");
+        expect(tester.validMatrixExpression[5], "");
+        expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case2: func matrix operator func matrix', () {
@@ -422,6 +507,14 @@ void main() {
         expect(result[3], 'permanent');
         expect(result[4], '&4;5@4;7@');
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "*");
+        expect(tester.validMatrixExpression[1], "determinant");
+        expect(tester.validMatrixExpression[2], "&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@");
+        expect(tester.validMatrixExpression[3], "permanent");
+        expect(tester.validMatrixExpression[4], "&4;5@4;7@");
+        expect(tester.validMatrixExpression[5], "");
+        expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('case: scalar matrix operator scalar matrix', () {
@@ -434,6 +527,14 @@ void main() {
         expect(result[3], '`𝑒');
         expect(result[4], '&4;5@4;7@');
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "*");
+        expect(tester.validMatrixExpression[1], "");
+        expect(tester.validMatrixExpression[2], "&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@");
+        expect(tester.validMatrixExpression[3], "");
+        expect(tester.validMatrixExpression[4], "&4;5@4;7@");
+        expect(tester.validMatrixExpression[5], "2.0");
+        expect(tester.validMatrixExpression[6], "`𝑒");
+        expect(tester.validMatrixExpression[7], "false");
       });
     });
 
