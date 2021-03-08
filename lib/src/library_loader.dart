@@ -12,7 +12,7 @@ typedef CalculateFunction = double Function(Pointer<Utf8>);
 typedef RawMatrixFunction = Pointer<Utf8> Function(Pointer<Utf8>, Pointer<Utf8>,
     Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>, Double, Double, Pointer<Utf8>);
 typedef MatrixFunction = Pointer<Utf8> Function(Pointer<Utf8>, Pointer<Utf8>,
-    Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>, double x, double y, Pointer<Utf8> isMatrix2Empty);
+    Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>, double x, double y, Pointer<Utf8>);
 
 class LibraryLoader{
   static const FILE_NAME = "libcalc.so";

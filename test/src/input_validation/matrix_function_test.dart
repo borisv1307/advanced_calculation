@@ -250,6 +250,7 @@ void main() {
         expect(tester.validMatrixExpression[4], "&4;5@7;8@0;1@");
         expect(tester.validMatrixExpression[5], "");
         expect(tester.validMatrixExpression[6], "");
+        expect(tester.validMatrixExpression[7], "false");
       });
 
       test('+ for complex expression with size greater than 1x1 matrix', () {
@@ -506,6 +507,13 @@ void main() {
         expect(result[3], 'permanent');
         expect(result[4], '&4;5@4;7@');
         expect(tester.testMatrixFunction(string), equals(true));
+        expect(tester.validMatrixExpression[0], "*");
+        expect(tester.validMatrixExpression[1], "determinant");
+        expect(tester.validMatrixExpression[2], "&(1+sin(2*3));(3-(`𝜋*min(2,log(1000))))@(`𝑒*√(atan(2+6)));(0/9)@");
+        expect(tester.validMatrixExpression[3], "permanent");
+        expect(tester.validMatrixExpression[4], "&4;5@4;7@");
+        expect(tester.validMatrixExpression[5], "");
+        expect(tester.validMatrixExpression[6], "");
         expect(tester.validMatrixExpression[7], "false");
       });
 
