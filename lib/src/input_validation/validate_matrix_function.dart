@@ -8,9 +8,9 @@ import 'package:advanced_calculation/src/helper/matrix_helper.dart';
 class ValidateMatrixFunction {
   MatrixHelper helper = MatrixHelper();
   NegativeHelper negativesHelper = NegativeHelper();
-  ValidateFunction validate = new ValidateFunction();
+  ValidateFunction validate = ValidateFunction();
   String specialMatrixFunction = "";
-  List<String> validMatrixExpression = new List<String>();
+  List<String> validMatrixExpression = List<String>();
 
   // support different valid combinations for 2 matrix operations only
   bool testMatrixFunction(String expression){
