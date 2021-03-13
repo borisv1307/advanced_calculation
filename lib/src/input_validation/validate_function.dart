@@ -1,6 +1,7 @@
 import 'package:advanced_calculation/src/input_validation/error_state.dart';
 import 'package:advanced_calculation/src/input_validation/input_tokens.dart';
 import 'package:advanced_calculation/src/input_validation/open_subexpression_state.dart';
+import 'package:advanced_calculation/src/input_validation/operator_state.dart';
 import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:advanced_calculation/src/parse/expression_parser.dart';
 import 'package:advanced_calculation/src/translator/translate_pattern.dart';
@@ -43,8 +44,11 @@ class ValidateFunction {
       invalidTokenIndex = inputString.length - 1;
     }else if(currentState is StartState){
       invalidTokenIndex = 0;
+    }else if(currentState is OperatorState) {
+      invalidTokenIndex = inputString.length - 1;
+    }else if(currentState.counter == -1){
+      invalidTokenIndex = inputString.length - 1;
     }
-
     int invalidIndex = _convertTokenIndex(invalidTokenIndex, inputString);
 
     return invalidIndex;
