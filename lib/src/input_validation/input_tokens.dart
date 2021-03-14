@@ -6,7 +6,7 @@ class InputTokens{
   static final List<String> specialOperators = ['(',')','^','²','⁻¹'];
   static final List<String> trigFunctions = ["sin","cos","tan", "sec", "csc", "cot", "sinh", "cosh", "tanh", "sech", "csch", "coth",
     "asin", "acos", "atan", "asec", "acsc", "acot","acoth","asinh", "acosh", "atanh", "acsch", "asech"];
-  static final List<String> matrixReturnMatrixFunctions = ["transpose", "reduced_row_echelon"];
+  static final List<String> matrixReturnMatrixFunctions = ["transpose", "reduced_row_echelon", "inverse"];
   static final List<String> matrixReturnValuesFunctions = ["determinant", "permanent"];
   static final List<String> matrixOperators = ['*','/','-','+'];
 }
