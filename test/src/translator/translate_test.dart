@@ -103,7 +103,85 @@ void main() {
       });
     });
     group('correctly parses simple matrix expression', () {
-      test('2x2', () {
+      test('1 matrix translation', () {
+        List<String> testExpr = ["", "transpose", "&1;2;3@4;5;6@7;8;9@", "", "", "", "", "true"];
+        List<String> results = translator.translateMatrixExpr(testExpr);
+        expect(results[0], "null");
+        expect(results[1], "transpose");
+        expect(results[2], "&1;2;3@4;5;6@7;8;9\$");
+        expect(results[3], "null");
+        expect(results[4], "&\$");
+        expect(results[5], "1.0");
+        expect(results[6], "1.0");
+        expect(results[7], "true");
+      });
+
+      test('matrix operator matrix translation', () {
+        List<String> testExpr = ["*", "", "&1;2;3@4;5;6@7;8;9@", "", "&1;2;3@4;5;6@7;8;9@", "", "", "false"];
+        List<String> results = translator.translateMatrixExpr(testExpr);
+        expect(results[0], "multiply");
+        expect(results[1], "null");
+        expect(results[2], "&1;2;3@4;5;6@7;8;9\$");
+        expect(results[3], "null");
+        expect(results[4], "&1;2;3@4;5;6@7;8;9\$");
+        expect(results[5], "1.0");
+        expect(results[6], "1.0");
+        expect(results[7], "false");
+      });
+
+      test('Case1: matrix operator func matrix translation', () {
+        List<String> testExpr = ["+", "", "&1;2;3@4;5;6@7;8;9@", "transpose", "&1;2;3@4;5;6@7;8;9@", "", "", "false"];
+        List<String> results = translator.translateMatrixExpr(testExpr);
+        expect(results[0], "add");
+        expect(results[1], "null");
+        expect(results[2], "&1;2;3@4;5;6@7;8;9\$");
+        expect(results[3], "transpose");
+        expect(results[4], "&1;2;3@4;5;6@7;8;9\$");
+        expect(results[5], "1.0");
+        expect(results[6], "1.0");
+        expect(results[7], "false");
+      });
+
+      test('Case2: value operator func matrix translation', () {
+        List<String> testExpr = ["/", "", "5", "permanent", "&1;2;3@4;5;6@7;8;9@", "", "", "false"];
+        List<String> results = translator.translateMatrixExpr(testExpr);
+        expect(results[0], "divide");
+        expect(results[1], "determinant");
+        expect(results[2], "&5\$");
+        expect(results[3], "permanent");
+        expect(results[4], "&1;2;3@4;5;6@7;8;9\$");
+        expect(results[5], "1.0");
+        expect(results[6], "1.0");
+        expect(results[7], "false");
+      });
+
+      test('Case1: func matrix operator matrix translation', () {
+        List<String> testExpr = ["/", "transpose", "&1;2;3@4;5;6@7;8;9\$", "", "&1;2;3@4;5;6@7;8;9@", "", "", "false"];
+        List<String> results = translator.translateMatrixExpr(testExpr);
+        expect(results[0], "divide");
+        expect(results[1], "transpose");
+        expect(results[2], "&1;2;3@4;5;6@7;8;9\$");
+        expect(results[3], "null");
+        expect(results[4], "&1;2;3@4;5;6@7;8;9\$");
+        expect(results[5], "1.0");
+        expect(results[6], "1.0");
+        expect(results[7], "false");
+      });
+
+      test('Case2: func matrix operator value translation', () {
+        List<String> testExpr = ["*", "permanent", "&1;2;3@4;5;6@7;8;9\$", "", "𝜋", "", "", "false"];
+        List<String> results = translator.translateMatrixExpr(testExpr);
+        expect(results[0], "multiply");
+        expect(results[1], "permanent");
+        expect(results[2], "&1;2;3@4;5;6@7;8;9\$");
+        expect(results[3], "determinant");
+        expect(results[4], "&𝜋\$");
+        expect(results[5], "1.0");
+        expect(results[6], "1.0");
+        expect(results[7], "false");
+      });
+
+      test('Case1: func matrix operator func matrix translation', () {
         List<String> testExpr = ["+", "", "&1;2@3;4@", "", "&5;6@7;8@", "", "", "false"];
         List<String> results = translator.translateMatrixExpr(testExpr);
         expect(results[0], "add");
@@ -115,7 +193,8 @@ void main() {
         expect(results[6], "1.0");
         expect(results[7], "false");
       });
-      test('3x3', () {
+
+      test('Case2: func matrix operator func matrix translation', () {
         List<String> testExpr = ["-", "", "&1;2;3@4;5;6@7;8;9@", "", "&1;2;3@4;5;6@7;8;9@", "", "2.5", "false"];
         List<String> results = translator.translateMatrixExpr(testExpr);
         expect(results[0], "subtract");
@@ -126,7 +205,6 @@ void main() {
         expect(results[5], "1.0");
         expect(results[6], "2.5");
         expect(results[7], "false");
-
       });
     });
     group('unclosed parentheses:', () {

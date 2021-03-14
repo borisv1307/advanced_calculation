@@ -4,6 +4,7 @@ import 'package:advanced_calculation/src/library_loader.dart';
 import 'package:advanced_calculation/src/parse/expression_parser.dart';
 import 'package:advanced_calculation/src/translator/translate_pattern.dart';
 import 'package:advanced_calculation/src/helper/matrix_helper.dart';
+import 'package:advanced_calculation/src/input_validation/pattern.dart';
 import 'package:ffi/ffi.dart';
 
 class Translator {
@@ -79,9 +80,9 @@ class Translator {
 
   List<String> translateMatrixExpr(List<String> validMatrixExpr) {
     String operator = _translateOperator(validMatrixExpr[0]);
-    String matrixFunc1 = _translateMatrixFunc(validMatrixExpr[1]);
+    String matrixFunc1 = _translateMatrixFunc(validMatrixExpr[1], validMatrixExpr[2]);
     String matrix1 = _translateMatrix(validMatrixExpr[2]);
-    String matrixFunc2 = _translateMatrixFunc(validMatrixExpr[3]);
+    String matrixFunc2 = _translateMatrixFunc(validMatrixExpr[3], validMatrixExpr[4]);
     String matrix2 = _translateMatrix(validMatrixExpr[4]);
     String scalar1 = _translateScalar(validMatrixExpr[5]);
     String scalar2 = _translateScalar(validMatrixExpr[6]);
@@ -157,14 +158,20 @@ class Translator {
       List<String> matrixValues = helper.getMatrixValues(matrix);
       matrix = evaluateMatrix(matrixSize, matrixValues);
     }
+    else if(Pattern.validMatrixOperand.hasMatch(matrix))
+      matrix = "&" + matrix + "\$";
     else if(matrix.isEmpty)
       matrix = "null";
 
     return matrix;
   }
 
-  String _translateMatrixFunc(String matrixFunc){
-    if(matrixFunc.isEmpty)
+  String _translateMatrixFunc(String matrixFunc, String matrix){
+    if(matrix.isEmpty)
+      matrixFunc = "null";
+    else if(Pattern.validMatrixOperand.hasMatch(matrix))
+      matrixFunc = "determinant";
+    else if(helper.isMatrix(matrix) && matrixFunc.isEmpty)
       matrixFunc = "null";
 
     return matrixFunc;
