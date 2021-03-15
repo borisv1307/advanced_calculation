@@ -14,6 +14,9 @@ typedef RawMatrixFunction = Pointer<Utf8> Function(Pointer<Utf8>, Pointer<Utf8>,
 typedef MatrixFunction = Pointer<Utf8> Function(Pointer<Utf8>, Pointer<Utf8>,
     Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>, double x, double y, Pointer<Utf8>);
 
+typedef RawConversionFunction = Double Function(Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>, Double x);
+typedef ConversionFunction = double Function(Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>, double x);
+
 class LibraryLoader{
   static const FILE_NAME = "libcalc.so";
   final DynamicLibrary library;
@@ -51,5 +54,13 @@ class LibraryLoader{
 
     
     return matrixFunction;
+  }
+
+    ConversionFunction loadConversionFunction() {
+    ConversionFunction conversionFunction = library
+        .lookup<NativeFunction<RawConversionFunction>>("conversions")
+        .asFunction<ConversionFunction>();
+
+    return conversionFunction;
   }
 }

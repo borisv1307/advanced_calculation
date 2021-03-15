@@ -2,6 +2,7 @@ library advanced_calculation;
 
 import 'package:advanced_calculation/calculation_options.dart';
 import 'package:advanced_calculation/src/calculator.dart';
+import 'package:advanced_calculation/src/conversions_calculator.dart';
 import 'package:advanced_calculation/src/coordinate_calculator.dart';
 import 'package:advanced_calculation/src/matrix_calculator.dart';
 
@@ -9,11 +10,13 @@ class AdvancedCalculator {
   CoordinateCalculator _coordinateCalculator;
   Calculator _calculator;
   MatrixCalculator _matrixCalculator;
+  ConversionCalculator _conversionCalculator;
 
   AdvancedCalculator(){
     _coordinateCalculator = getCoordinateCalculator();
     _calculator = getCalculator();
     _matrixCalculator = getMatrixCalculator();
+    _conversionCalculator = getConversionCalculator();
   }
 
 
@@ -33,6 +36,10 @@ class AdvancedCalculator {
     return _matrixCalculator.calculate(input);
   }
 
+  double calculateConversion(String input, double x){
+    return _conversionCalculator.calculate(input, x);
+  }
+
   MatrixCalculator getMatrixCalculator(){
     return MatrixCalculator();
   }
@@ -45,6 +52,8 @@ class AdvancedCalculator {
     return Calculator();
   }
 
-
+  ConversionCalculator getConversionCalculator(){
+    return ConversionCalculator();
+  }
 
 }
