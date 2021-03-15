@@ -165,6 +165,11 @@ void main(){
         expect(tester.findSyntaxError(string), 2);
       });
 
+      test('single value unexpected close', () {
+        var string = '3)';
+        expect(tester.findSyntaxError(string), 1);
+      });
+
       test('no adjacent pairs', () {
         var string = '(2+2)(2+2)';
         expect(tester.findSyntaxError(string), 5);
@@ -299,6 +304,11 @@ void main(){
       test('inverse', () {
         var string = '3⁻¹';
         expect(tester.findSyntaxError(string), -1);
+      });
+
+      test('trailing operator', () {
+        var string = '3+4+';
+        expect(tester.findSyntaxError(string), 3);
       });
     });
 
